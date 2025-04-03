@@ -10,6 +10,7 @@ import '@xyflow/react/dist/style.css';
 import TargetResource from '../NodeTypes/TargetResource.jsx';
 import SourceResource from '../NodeTypes/SourceResource.jsx';
 import MissingRecipesLogger from '../jsx/MissingRecipesLogger.jsx';
+import React from 'react';
   
 const rfStyle = {
   backgroundColor: '#18232f',
@@ -49,6 +50,7 @@ function PageFactory() {
         fitView
         style={rfStyle}
         maxZoom={5}
+        minZoom={0.05}
       />
       <div className="floating">
         <MissingRecipesLogger />
