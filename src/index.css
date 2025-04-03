@@ -10,6 +10,36 @@ body {
   height: 100vh;
 }
 
+.page-selector {
+  position: absolute;
+  bottom: 2em;
+  left: 50%;
+  transform: translateX(-50%);
+
+}
+
+.page-selector > div {
+  width: 10em;
+  height: 4em;
+  display: inline-block;
+  background-color: rgb(62, 62, 66);
+  color: orange;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color .2s linear;
+  font-family: monospace;
+  padding-top: 1em;
+  border-radius: 1em;
+}
+
+.page-selector > div:hover {
+  background-color: rgb(99, 98, 98);
+}
+
+.page-selector > div.selected {
+  border: 3px dashed rgb(167, 117, 24);
+}
+
 .target-resource-node, .source-resource-node {
   background-color: rgb(83, 83, 83);
   border: 1px solid white;

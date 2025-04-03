@@ -1,61 +1,34 @@
-import { useCallback, useState } from 'react';
-import {
-  ReactFlow,
-  addEdge,
-  applyEdgeChanges,
-  applyNodeChanges,
-} from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
- 
-import TargetResource from './NodeTypes/TargetResource.jsx';
-import SourceResource from './NodeTypes/SourceResource.jsx';
-import MissingRecipesLogger from './jsx/MissingRecipesLogger.jsx';
-import { initial_edges, initial_nodes } from './satis/calculator.js';
- 
-const rfStyle = {
-  backgroundColor: '#18232f',
-};
- 
+import PageRecipes from './jsx/PageRecipes.jsx'
+import PageFactory from './jsx/PageFactory.jsx'
+import { useState } from 'react';
+import React from 'react';
 
-// we define the nodeTypes outside of the component to prevent re-renderings
-// you could also use useMemo inside the component
-const nodeTypes = { TargetResource, SourceResource };
- 
-function Flow() {
-  const [nodes, setNodes] = useState(initial_nodes);
-  const [edges, setEdges] = useState(initial_edges);
- 
-  const onNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [setNodes],
-  );
-  const onEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [setEdges],
-  );
-  const onConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
-    [setEdges],
-  );
- 
-  return (
-    <>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        nodeTypes={nodeTypes}
-        fitView
-        style={rfStyle}
-        maxZoom={5}
-      />
-      <div className="floating">
-        <MissingRecipesLogger />
-      </div>
-    </>
-  );
+function App() {
+  let [page, setPage] = useState('recipes');
+
+  let page_jsx = <p>Как ты тут оказался? *-*</p>;
+  if (page == 'recipes') {
+    page_jsx = <PageRecipes/>;
+  }
+  else if (page == 'factory') {
+    page_jsx = <PageFactory/>;
+  }
+
+  return <>
+    {page_jsx}
+    <div className="page-selector">
+      <div 
+        className={page == 'recipes' ? 'selected' : ''}
+        onClick={() => {
+          setPage('recipes');
+        }}>Recipes</div>
+      <div 
+        className={page == 'factory' ? 'selected' : ''}
+        onClick={() => {
+          setPage('factory');
+        }}>Factory</div>
+    </div>
+  </>;
 }
- 
-export default Flow;
+
+export default App;
