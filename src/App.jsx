@@ -2,6 +2,7 @@ import PageRecipes from './jsx/PageRecipes.jsx'
 import PageFactory from './jsx/PageFactory.jsx'
 import { useState } from 'react';
 import React from 'react';
+import MissingRecipesLogger from './jsx/MissingRecipesLogger.jsx';
 
 function App() {
   let [page, setPage] = useState('recipes');
@@ -27,6 +28,9 @@ function App() {
         onClick={() => {
           setPage('factory');
         }}>Factory</div>
+    </div>
+    <div className="floating">
+      <MissingRecipesLogger />
     </div>
   </>;
 }

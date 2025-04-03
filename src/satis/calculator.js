@@ -124,11 +124,6 @@ function get_all_recipes() {
                     position: { x: 300 + recipe_i * 600, y: ingcnt*100 + vertical_offset + 100 },
                     data: {rcname: recipe.name2, rate: recipe.output2}
                 })
-                edges.push({
-                    id: 'out_e' + cnt,
-                    source: 'out' + cnt,
-                    target: 'out2_' + cnt,
-                })
             }
 
             for(let ing in recipe.ingredients) {
@@ -162,4 +157,4 @@ function get_all_recipes() {
 
 const [initial_nodes, initial_edges] = get_all_recipes(); 
 
-export {check_all_recipes, get_all_recipes, initial_nodes, initial_edges};
+export {check_all_recipes, get_all_recipes, initial_nodes, initial_edges, all_recipes};

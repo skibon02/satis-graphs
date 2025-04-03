@@ -1,60 +1,43 @@
 import { useCallback, useState } from 'react';
 import {
   ReactFlow,
-  addEdge,
-  applyEdgeChanges,
-  applyNodeChanges,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
  
 import TargetResource from '../NodeTypes/TargetResource.jsx';
 import SourceResource from '../NodeTypes/SourceResource.jsx';
-import MissingRecipesLogger from '../jsx/MissingRecipesLogger.jsx';
+import { initial_edges, initial_nodes } from '../satis/calculator.js';
 import React from 'react';
-  
+import TargetSelector from './TargetSelector.jsx';
+ 
 const rfStyle = {
-  backgroundColor: '#18232f',
+  backgroundColor: '#282330',
 };
  
 
-// we define the nodeTypes outside of the component to prevent re-renderings
-// you could also use useMemo inside the component
 const nodeTypes = { TargetResource, SourceResource };
  
 function PageFactory() {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
  
-  const onNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [setNodes],
-  );
-  const onEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [setEdges],
-  );
-  const onConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
-    [setEdges],
-  );
+  const [targetResources, setTargetResources] = useState({});
  
   return (
     <>
       <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
+        defaultNodes={nodes}
+        defaultEdges={edges}
         nodeTypes={nodeTypes}
         fitView
         style={rfStyle}
         maxZoom={5}
-        minZoom={0.05}
+        minZoom={0.1}
+        nodesDraggable={false}
+        nodesConnectable={false}
+        elementsSelectable={false}
       />
-      <div className="floating">
-        <MissingRecipesLogger />
-      </div>
+      <TargetSelector targetResources={targetResources} setTargetResources={setTargetResources} />
     </>
   );
 }
