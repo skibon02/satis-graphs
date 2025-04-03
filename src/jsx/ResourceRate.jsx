@@ -5,7 +5,7 @@ function ResourceRate({ rcname, rate }) {
 
   return (
     <div className="resource-rate-cont">
-      <img src={"/satis-rc/" + rcname + ".webp"} />
+      <img src={`${baseUrl}satis-rc/${rcname}.webp`} />
       <p>{rounded_rate} / min</p>
     </div>
   );
