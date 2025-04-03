@@ -12,23 +12,13 @@ function get_all_known_resources() {
     for (let recipe of alt_recipes) {
         let name = recipe.name;
         res[name] = true;
+
+        if (recipe.name2) {
+            res[recipe.name2] = true;
+        }
     }
 
     return Object.keys(res);
-}
-
-function basic_recipe(rcname) {
-    if (sources.includes(rcname)) {
-        return "basic_resource";
-    }
-
-    let recipe = recipes[rcname];
-    if (!recipe) {
-        return "not_found";
-    }
-
-    recipe.name = rcname;
-    return recipe;
 }
 
 function all_recipes(rcname) {
@@ -38,15 +28,19 @@ function all_recipes(rcname) {
 
     // Search for basic recipe
     let basic_recipe = recipes[rcname];
-    if (!basic_recipe) {
-        return "not_found";
+    let res = []
+    if (basic_recipe) {
+        basic_recipe.name = rcname;
+        res.push(basic_recipe);
     }
-    basic_recipe.name = rcname;
 
-    let res = [basic_recipe];
     // Search alt recipes
     for (let recipe of alt_recipes) {
         if (rcname == recipe.name) {
+            res.push(recipe);
+        }
+
+        if (rcname == recipe.name2) {
             res.push(recipe);
         }
     }
@@ -54,23 +48,33 @@ function all_recipes(rcname) {
     return res;
 }
 
-function find_missing_recipes(rcname) {
+function find_missing_recipes(rcname, callStack = new Set()) {
+    // If this recipe is already in the call stack, we've found a cycle - skip it
+    if (callStack.has(rcname)) {
+        return {};
+    }
+
     let res = {};
     let recipes = all_recipes(rcname);
+    
     if (recipes === "basic_resource") {
         return res;
     }
     
-    if (recipes === "not_found") {
+    if (recipes.length == 0) {
         res[rcname] = true;
         return res;
     }
 
+    callStack.add(rcname);
     for (let recipe of recipes) {
         for (let rc in recipe.ingredients) {
-            res = Object.assign(res, find_missing_recipes(rc));
+            // Pass down the call stack to child calls
+            let missing = find_missing_recipes(rc, new Set(callStack));
+            res = Object.assign(res, missing);
         }
     }
+    callStack.delete(rcname);
 
     return res;
 }
@@ -95,7 +99,7 @@ function get_all_recipes() {
     let ingcnt = 0;
     for (let rc of resources) {
         let recipes = all_recipes(rc);
-        if (recipes == "not_found" || recipes == "basic_resource") {
+        if (recipes == "basic_resource") {
             continue;
         }
 
@@ -113,6 +117,19 @@ function get_all_recipes() {
                 position: { x: 300 + recipe_i * 600, y: ingcnt*100 + vertical_offset },
                 data: {rcname: recipe.name, rate: recipe.output}
             })
+            if (recipe.name2) {
+                nodes.push({
+                    id: 'out2_' + cnt,
+                    type: 'TargetResource',
+                    position: { x: 300 + recipe_i * 600, y: ingcnt*100 + vertical_offset + 100 },
+                    data: {rcname: recipe.name2, rate: recipe.output2}
+                })
+                edges.push({
+                    id: 'out_e' + cnt,
+                    source: 'out' + cnt,
+                    target: 'out2_' + cnt,
+                })
+            }
 
             for(let ing in recipe.ingredients) {
                 nodes.push({

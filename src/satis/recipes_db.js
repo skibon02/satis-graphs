@@ -17,6 +17,62 @@ let sources = [
 
 
 let alt_recipes = [
+    // refinery
+
+
+    {
+        name: "plastic",
+        output: 20,
+        name2: "heavy-ooil-residue",
+        output2: 10,
+        ingredients: {
+            "crude-oil": 30,
+        },
+    },
+    {
+        name: "rubber",
+        output: 20,
+        name2: "heavy-ooil-residue",
+        output2: 10,
+        ingredients: {
+            "crude-oil": 30,
+        },
+    },
+    {
+        name: "fuel",
+        output: 40,
+        name2: "polymer-resin",
+        output2: 30,
+        ingredients: {
+            "crude-oil": 60,
+        },
+    },
+    {
+        name: "plastic",
+        output: 20,
+        ingredients: {
+            "polymer-resin": 60,
+            "water": 20,
+        },
+    },
+    {
+        name: "rubber",
+        output: 20,
+        ingredients: {
+            "polymer-resin": 40,
+            "water": 40,
+        },
+    },
+    {
+        name: "smokeless-powder",
+        output: 20,
+        ingredients: {
+            "black-powder": 20,
+            "heavy-oil-residue": 10
+        }
+    },
+
+    // alt recipes
     {
         name: "caterium-ingot",
         output: 12,
@@ -59,6 +115,14 @@ let alt_recipes = [
         }
     },
 
+    {
+        name: "reinforced-iron-plate",
+        output: 3.75,
+        ingredients: {
+            "iron-plate": 11.25,
+            "rubber": 3.75,
+        }
+    },
     {
         name: "automated-wiring",
         output: 7.5,
@@ -123,6 +187,14 @@ let alt_recipes = [
         output: 120,
         ingredients: {
             "caterium-ingot": 15
+        }
+    },
+    {
+        name: "silica",
+        ouptup: 52.5,
+        ingredients: {
+            "raw-quartz": 22.5,
+            "limestone": 37.5,
         }
     },
     {
@@ -191,6 +263,14 @@ let alt_recipes = [
         }
     },
     {
+        name: "fuel",
+        output: 100,
+        ingredients: {
+            "heavy-oil-residue": 50,
+            "water": 100
+        }
+    },
+    {
         name: "circuit-board",
         output: 5,
         ingredients: {
@@ -207,7 +287,84 @@ let alt_recipes = [
             "concrete": 20,
         }
     },
-
+    {
+        name: "black-powder",
+        output: 45,
+        ingredients: {
+            sulfur: 7.5,
+            "compacted-coal": 15
+        }
+    },
+    {
+        name: "concrete",
+        output: 50,
+        ingredients: {
+            "silica": 15,
+            "limestone": 60,
+        }
+    },
+    {
+        name: "versatile-framework",
+        output: 7.5,
+        ingredients: {
+            "modular-frame": 3.75,
+            "rubber": 30,
+            "steel-beam": 22.5
+        }
+    },
+    {
+        name: "quartz-crystal",
+        output: 54,
+        ingredients: {
+            'raw-quartz': 75,
+            'coal': 36,
+        }
+    },
+    {
+        name: 'quickwire',
+        output: 90,
+        ingredients: {
+            'caterium-ingot': 7.5,
+            'copper-ingot': 37.5,
+        }
+    },
+    {
+        name: 'wire',
+        output: 90,
+        ingredients: {
+            'caterium-ingot': 3,
+            'copper-ingot': 12,
+        }
+    },
+    {
+        name: 'heavy-modular-frame',
+        output: 2.8125,
+        ingredients: {
+            'modular-frame': 7.5,
+            'encased-industrial-beam': 9.375,
+            'steel-pipe': 33.75,
+            'concrete': 20.625,
+        }
+    },
+    {
+        name: 'heavy-modular-frame',
+        output: 3.75,
+        ingredients: {
+            'modular-frame': 18.75,
+            'encased-industrial-beam': 11.25,
+            'rubber': 75,
+            'screw': 390,
+        }
+    },
+    {
+        name: "heavy-oil-residue",
+        output: 40,
+        name2: 'polymer-resin',
+        output2: 20,
+        ingredients: {
+            "crude-oil": 30,
+        },
+    },
     {
         name: "cable",
         output: 100,
@@ -216,7 +373,6 @@ let alt_recipes = [
             "rubber": 30,
         }
     },
-
     {
         name: "iron-ingot",
         output: 75,
@@ -225,7 +381,13 @@ let alt_recipes = [
             "copper-ore": 10,
         }
     },
-
+    {
+        name: "steel-pipe",
+        output: 25,
+        ingredients: {
+            "iron-ingot": 100
+        }
+    },
     {
         name: "wire",
         output: 22.5,
@@ -249,7 +411,14 @@ let alt_recipes = [
             "concrete": 30,
         }
     },
-
+    {
+        name: "ai-limiter",
+        output: 8,
+        ingredients: {
+            "quickwire": 120,
+            "plastic": 28
+        }
+    },
 
     {
         name: "smart-plating",
@@ -258,6 +427,15 @@ let alt_recipes = [
             "reinforced-iron-plate": 2.5,
             "rotor": 2.5,
             "plastic": 7.5,
+        }
+    },
+    {
+        name: "polymer-resin",
+        output: 130,
+        name2: "heavy-oil-residue",
+        output2: 20,
+        ingredients: {
+            "crude-oil": 60
         }
     },
     {
@@ -276,6 +454,22 @@ let alt_recipes = [
             "quickwire": 60
         }
     },
+    {
+        name: "plastic",
+        output: 60,
+        ingredients: {
+            "rubber": 30,
+            "fuel": 30,
+        }
+    },
+    {
+        name: "rubber",
+        output: 60,
+        ingredients: {
+            "rubber": 30,
+            "fuel": 30,
+        }
+    },
 
     {
         name: "motor",
@@ -292,6 +486,23 @@ let alt_recipes = [
         ingredients: {
             "limestone": 100,
             "rubber": 20,
+        }
+    },
+    {
+        name: "circuit-board",
+        output: 12.5,
+        ingredients: {
+            "copper-sheet": 27.5,
+            "silica": 27.5,
+        }
+    },
+    {
+        name: "high-speed-connector",
+        output: 3,
+        ingredients: {
+            "quickwire": 90,
+            "silica": 37.5,
+            "circuit-board": 3
         }
     },
     {
@@ -334,6 +545,14 @@ let alt_recipes = [
     },
     {
         name: "modular-frame",
+        output: 3,
+        ingredients: {
+            "reinforced-iron-plate": 2,
+            "steel-pipe": 10,
+        },
+    },
+    {
+        name: "reinforced-iron-plate",
         output: 5.625,
         ingredients: {
             "iron-plate": 18.75,
@@ -354,6 +573,14 @@ let alt_recipes = [
         ingredients: {
             "copper-ore": 25,
             "petroleum-coke": 40
+        }
+    },
+    {
+        name: "concrete",
+        output: 80,
+        ingredients: {
+            "limestone": 120,
+            "water": 100,
         }
     }
 ];
@@ -461,6 +688,12 @@ let recipes = {
         ingredients: {
             "steel-beam": 18,
             "concrete": 36,
+        }
+    },
+    "fuel": {
+        output: 40,
+        ingredients: {
+            "heavy-oil-residue": 60
         }
     },
     "heavy-modular-frame": {
@@ -617,25 +850,6 @@ let recipes = {
         output: 30,
         ingredients: {
             "copper-ingot": 15,
-        }
-    },
-
-    "plastic": {
-        output: 20,
-        ingredients: {
-            "crude-oil": 30,
-        },
-        additional_output: {
-            "heavy-oil-residue": 10,
-        }
-    },
-    "rubber": {
-        output: 20,
-        ingredients: {
-            "crude-oil": 30,
-        },
-        additional_output: {
-            "heavy-oil-residue": 20,
         }
     },
 }

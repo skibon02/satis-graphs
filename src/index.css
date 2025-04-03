@@ -93,7 +93,7 @@ body {
 
 .missing-resource {
   color: rgb(247, 85, 85);
-  font-size: 2em;
+  font-size: 1.5em;
 
   border-top: 3px solid rgb(255, 255, 255);
   padding-top: .5em;
