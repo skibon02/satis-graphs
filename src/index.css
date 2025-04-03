@@ -10,30 +10,69 @@ body {
   height: 100vh;
 }
 
-.resource-with-amount-cont {
+.target-resource-node, .source-resource-node {
+  background-color: rgb(83, 83, 83);
+  border: 1px solid white;
+  padding: .5em 1em;
+}
+
+.target-resource-node {
+  border-left: 3px dashed rgb(254, 166, 58)
+}
+
+.source-resource-node {
+  border-right: 3px dashed rgb(34, 154, 252);
+}
+
+.target-resource-node p, .source-resource-node p {
+  margin: .2em;
+  color: rgb(187, 177, 208);
+}
+
+.resource-rate-cont {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.target-resource-node {
-  background-color: rgb(83, 83, 83);
-  border: 1px solid white;
-  border-left: 3px dashed rgb(254, 166, 58);
-  padding: .5em 1em;
-}
-
-.target-resource-node p {
-  margin: .2em;
-  color: rgb(187, 177, 208);
-}
-
-.resource-with-amount-cont img {
+.resource-rate-cont img {
   width: 2.5em;
 }
 
-.resource-with-amount-cont p {
+.resource-rate-cont p {
   padding-left: .6em;
   font-weight: 500;
   color: rgb(254, 175, 29);
+}
+
+.floating {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: .5em;
+
+  font-weight: 500;
+  padding: .5em;
+}
+
+.missing-resource-title {
+  font-size: 1.4em;
+  color: rgb(255, 255, 255);
+
+}
+
+.missing-resource {
+  color: rgb(247, 85, 85);
+  font-size: 2em;
+
+  border-top: 3px solid rgb(255, 255, 255);
+  padding-top: .5em;
+}
+
+.missing-resource-list {
+  background:rgb(83, 83, 83);
+  border: 2px solit rgb(171, 9, 9);
+  padding: .5em;
+
+  margin-bottom: 1em;
 }

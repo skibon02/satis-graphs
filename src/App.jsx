@@ -8,33 +8,22 @@ import {
 import '@xyflow/react/dist/style.css';
  
 import TargetResource from './NodeTypes/TargetResource.jsx';
+import SourceResource from './NodeTypes/SourceResource.jsx';
+import MissingRecipesLogger from './jsx/MissingRecipesLogger.jsx';
+import { initial_edges, initial_nodes } from './satis/calculator.js';
  
 const rfStyle = {
   backgroundColor: '#18232f',
 };
  
-const spread = 300;
-const initialNodes = [
-  {
-    id: 'node-1',
-    type: 'TargetResource',
-    position: { x: Math.random() * spread, y: Math.random() * spread },
-    data: { rcname: 'iron-ingot', amount: 25},
-  },
-  {
-    id: 'node-2',
-    type: 'TargetResource',
-    position: { x: Math.random() * spread, y: Math.random() * spread },
-    data: { rcname: 'iron-ingot', amount: 13},
-  },
-];
+
 // we define the nodeTypes outside of the component to prevent re-renderings
 // you could also use useMemo inside the component
-const nodeTypes = { TargetResource };
+const nodeTypes = { TargetResource, SourceResource };
  
 function Flow() {
-  const [nodes, setNodes] = useState(initialNodes);
-  const [edges, setEdges] = useState([]);
+  const [nodes, setNodes] = useState(initial_nodes);
+  const [edges, setEdges] = useState(initial_edges);
  
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
@@ -50,16 +39,22 @@ function Flow() {
   );
  
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onConnect={onConnect}
-      nodeTypes={nodeTypes}
-      fitView
-      style={rfStyle}
-    />
+    <>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        nodeTypes={nodeTypes}
+        fitView
+        style={rfStyle}
+        maxZoom={5}
+      />
+      <div className="floating">
+        <MissingRecipesLogger />
+      </div>
+    </>
   );
 }
  

@@ -3,22 +3,22 @@ import { Handle, Position } from '@xyflow/react';
 import ResourceRate from '../jsx/ResourceRate.jsx'
 
 const handleStyle = {
-    left: -10
+    right: -10
 }
  
-function TargetResource({ data, isConnectable }) {
+function SourceResource({ data, isConnectable }) {
   return (
-    <div className="target-resource-node">
+    <div className="source-resource-node">
       <Handle
-        type="target"
-        position={Position.Left}
+        type="source"
+        position={Position.Right}
         isConnectable={isConnectable}
         style={handleStyle}
       />
-      <p>Target resource:</p>
+      <p>Source resource:</p>
       <ResourceRate rcname={data.rcname} rate={data.rate}/>
     </div>
   );
 }
  
-export default TargetResource;
+export default SourceResource;
