@@ -145,14 +145,14 @@ body {
 }
 
 .add-target-resource {
-  background-color: rgb(194, 164, 192);
+  background-color: rgb(153, 184, 194);
   text-align: center;
   cursor: pointer;
 
   transition: background-color .2s linear;
 }
 .add-target-resource:hover {
-  background-color: rgb(143, 117, 141);
+  background-color: rgb(90, 111, 118);
 }
 
 .selected-recipes {
@@ -186,11 +186,16 @@ body {
   margin: 0 .8em;
 }
 
-.recipe-selector-item .item {
-  background-color: rgb(194, 164, 192);
+.recipe-selector-item .selected {
+  background-color: rgb(153, 184, 194);
   margin: .5em 0;
 }
 
+
 .recipe-selector-item .item {
-  background-color: rgb(147, 244, 242);
+  background-color: rgb(153, 184, 194);
+  border-bottom: 1px solid black;
+}
+.recipe-selector-item .container {
+  background-color: rgb(153, 184, 194);
 }

@@ -22,8 +22,9 @@ function SelectedRecipes({selectedRecipes, selectRecipe}) {
             <RcImage rcname={name}/>
             <Select 
                 classNames={{
-                    control: (state) =>
-                    state.isFocused ? 'item focused' : 'item',
+                    control: (state) => 'selected',
+                    option: (state) => 'item',
+                    menuList: (state) => 'container'
                 }}
                 formatOptionLabel={recipe => {
                     let ing_imgs = Object.keys(recipe.ingredients).map((ing)=> {
@@ -50,6 +51,7 @@ function SelectedRecipes({selectedRecipes, selectRecipe}) {
                         recipe_num
                     });
                 }}
+                getOptionValue={(option)=>{return option.output + Object.keys(option.ingredients).join("")}}
                 value={recipe}
                 options={recipes}/>
             </>
