@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import Select from 'react-select';
 import { all_recipes } from "../satis/calculator";
 import right_arrow from "../assets/right-arrow.png"
@@ -12,49 +12,49 @@ function RcImage({ rcname }) {
     );
 }
 
-function SelectedRecipes({selectedRecipes, selectRecipe}) {
+let SelectedRecipes = memo(function SelectedRecipes({selectedRecipes, selectRecipe}) {
     const recipeItems = Object.entries(selectedRecipes).map(([name, recipe_num]) => {
         let recipes = all_recipes(name);
         let recipe = recipes[recipe_num];
 
         return (
-            <>
-            <RcImage rcname={name}/>
-            <Select 
-                classNames={{
-                    control: (state) => 'selected',
-                    option: (state) => 'item',
-                    menuList: (state) => 'container'
-                }}
-                formatOptionLabel={recipe => {
-                    let ing_imgs = Object.keys(recipe.ingredients).map((ing)=> {
-                        return <RcImage rcname={ing}/>
-                    });
-                    let output_imgs = [recipe.name];
-                    if (recipe.name2) {
-                        output_imgs.push(recipe.name2);
-                    }
+            <div key={recipe.name + '-' + recipe_num}>
+                <RcImage rcname={name}/>
+                <Select 
+                    classNames={{
+                        control: (state) => 'selected',
+                        option: (state) => 'item',
+                        menuList: (state) => 'container'
+                    }}
+                    formatOptionLabel={recipe => {
+                        let ing_imgs = Object.keys(recipe.ingredients).map((ing)=> {
+                            return <RcImage key={ing} rcname={ing}/>
+                        });
+                        let output_imgs = [recipe.name];
+                        if (recipe.name2) {
+                            output_imgs.push(recipe.name2);
+                        }
 
-                    output_imgs = output_imgs.map(name => {
-                        return <RcImage rcname={name}/>
-                    })
-                    return <>
-                        {ing_imgs}
-                        <img className="arrow" src={right_arrow} />
-                        {output_imgs}
-                    </>
-                }}
-                onChange={(item)=> {
-                    let recipe_num = recipes.findIndex(el => el == item);
-                    selectRecipe({
-                        name,
-                        recipe_num
-                    });
-                }}
-                getOptionValue={(option)=>{return option.output + Object.keys(option.ingredients).join("")}}
-                value={recipe}
-                options={recipes}/>
-            </>
+                        output_imgs = output_imgs.map(name => {
+                            return <RcImage key={name} rcname={name}/>
+                        })
+                        return <>
+                            {ing_imgs}
+                            <img className="arrow" src={right_arrow} />
+                            {output_imgs}
+                        </>
+                    }}
+                    onChange={(item)=> {
+                        let recipe_num = recipes.findIndex(el => el == item);
+                        selectRecipe({
+                            name,
+                            recipe_num
+                        });
+                    }}
+                    getOptionValue={(option)=>{return option.output + Object.keys(option.ingredients).join("")}}
+                    value={recipe}
+                    options={recipes}/>
+            </div>
         )
     });
     return (
@@ -66,6 +66,6 @@ function SelectedRecipes({selectedRecipes, selectRecipe}) {
             </div>
         </div>
     )
-}
+})
 
 export default SelectedRecipes;

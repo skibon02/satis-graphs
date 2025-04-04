@@ -48,6 +48,52 @@ function all_recipes(rcname) {
     return res;
 }
 
+
+ 
+function traverseResource(rcname, select_recipe, rate=0, for_each = (rcname, recipe, rate) => {}) {
+  let rc_stack = [{rcname, rate}];
+  let visited = new Set();
+  while (rc_stack.length > 0) {
+    let rc = rc_stack.shift();
+    let rcname = rc.rcname;
+    let rcrate = rc.rate;
+
+    let recipes = all_recipes(rcname);
+    if (recipes === "basic_resource") {
+      continue;
+    }
+
+    let recipe_num;
+    if (recipes.length > 1) {
+      // use callback to determine recipe
+      recipe_num = select_recipe(rcname, recipes);
+    }
+    else {
+      recipe_num = 0;
+    }
+    let recipe = recipes[recipe_num];
+    for_each(rcname, recipe, rcrate);
+
+
+    let rec_resolved = false;
+    for (let ing in recipe.ingredients) {
+      if (visited.has(ing)) {
+        continue;
+      }
+      rec_resolved = true;
+
+      let out_rate = recipe.name === rcname ? recipe.output : recipe.output2;
+      rc_stack.push({
+        rcname: ing,
+        rate: rcrate / out_rate * recipe.ingredients[ing],
+      })
+    }
+    if (!rec_resolved) {
+      return "recursion_detected";
+    }
+  }
+}
+
 function find_missing_recipes(rcname, callStack = new Set()) {
     if (callStack.has(rcname)) {
         return {};
@@ -154,6 +200,63 @@ function get_all_recipes() {
     return [nodes, edges];
 }
 
+
+function generateAltRecipes(targetResources, cur_alt_recipes) {
+  let res = {};
+
+  for (let rc in targetResources) {
+    let traverse_res = traverseResource(rc, (rcname, recipes) => {
+      if (cur_alt_recipes[rcname]) {
+        res[rcname] = cur_alt_recipes[rcname];
+        return cur_alt_recipes[rcname];
+      }
+      else {
+        res[rcname] = 0;
+        return 0;
+      }
+    });
+    if (traverse_res == "recursion_detected") {
+      return "recursion_detected";
+    }
+  }
+
+  return res;
+}
+
+function calculate(targetResources, cur_alt_recipes) {
+    let res = {};
+
+    for (let rc in targetResources) {
+      let traverse_res = traverseResource(
+        rc, //1
+        (rcname, recipes) => {
+            if (cur_alt_recipes[rcname]) {
+            return cur_alt_recipes[rcname];
+            }
+            else {
+            return 0;
+            }
+        }, //2
+        targetResources[rc], //3
+        (rcname, recipe, rate) => {
+            if (res[rcname]) {
+                res[rcname].rate += rate;
+            }
+            else {
+                res[rcname] = {
+                    rate,
+                    recipe
+                }
+            }
+        }); //4
+      if (traverse_res == "recursion_detected") {
+        return "recursion_detected";
+      }
+    }
+  
+    return res;
+}
+
 const [initial_nodes, initial_edges] = get_all_recipes(); 
 
-export {check_all_recipes, get_all_recipes, initial_nodes, initial_edges, all_recipes};
+export {check_all_recipes, get_all_recipes, initial_nodes, initial_edges, all_recipes, generateAltRecipes, calculate};

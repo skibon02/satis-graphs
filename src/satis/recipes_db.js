@@ -19,7 +19,6 @@ let sources = [
 let alt_recipes = [
     // refinery
 
-
     {
         name: "plastic",
         output: 20,
@@ -466,11 +465,10 @@ let alt_recipes = [
         name: "rubber",
         output: 60,
         ingredients: {
-            "rubber": 30,
+            "plastic": 30,
             "fuel": 30,
         }
     },
-
     {
         name: "motor",
         output: 7.5,

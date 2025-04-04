@@ -1,9 +1,11 @@
 import React from "react";
 import {check_all_recipes} from "../satis/calculator";
 
+const missing_recipes = check_all_recipes();
+
 const MissingRecipesLogger = () => {
 
-    let missing_list = check_all_recipes().map((missing_rc) => {
+    let missing_list = missing_recipes.map((missing_rc) => {
         return <p key={missing_rc} className="missing-resource">{missing_rc}</p>;
     });
 
