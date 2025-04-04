@@ -23,7 +23,7 @@ let alt_recipes = [
     {
         name: "plastic",
         output: 20,
-        name2: "heavy-ooil-residue",
+        name2: "heavy-oil-residue",
         output2: 10,
         ingredients: {
             "crude-oil": 30,
@@ -32,7 +32,7 @@ let alt_recipes = [
     {
         name: "rubber",
         output: 20,
-        name2: "heavy-ooil-residue",
+        name2: "heavy-oil-residue",
         output2: 10,
         ingredients: {
             "crude-oil": 30,

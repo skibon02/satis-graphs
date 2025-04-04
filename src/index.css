@@ -154,3 +154,43 @@ body {
 .add-target-resource:hover {
   background-color: rgb(143, 117, 141);
 }
+
+.selected-recipes {
+  background-color: #5c5764;
+  position: absolute;
+  right: 0;
+  top: 4em;
+  padding: .5em;
+
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.selected-recipes > p {
+  color: white;
+  border-bottom: 1px solid white;
+  margin-bottom: .5em;
+  font-weight: 700;
+}
+
+.recipe-selector-item {
+  width: 20em;
+}
+
+.recipe-selector-item img {
+  width: 2em;
+  margin: 0 .2em;
+}
+
+.recipe-selector-item .arrow {
+  margin: 0 .8em;
+}
+
+.recipe-selector-item .item {
+  background-color: rgb(194, 164, 192);
+  margin: .5em 0;
+}
+
+.recipe-selector-item .item {
+  background-color: rgb(147, 244, 242);
+}

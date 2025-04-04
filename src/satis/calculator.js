@@ -49,7 +49,6 @@ function all_recipes(rcname) {
 }
 
 function find_missing_recipes(rcname, callStack = new Set()) {
-    // If this recipe is already in the call stack, we've found a cycle - skip it
     if (callStack.has(rcname)) {
         return {};
     }
