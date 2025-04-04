@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ReactFlow,
 } from '@xyflow/react';
@@ -9,23 +9,131 @@ import SourceResource from '../NodeTypes/SourceResource.jsx';
 import React from 'react';
 import TargetSelector from './TargetSelector.jsx';
 import SelectedRecipes from './SelectedRecipes.jsx';
-import { all_recipes, calculate, generateAltRecipes } from '../satis/calculator.js';
+import { calculate, generateAltRecipes } from '../satis/calculator.js';
 import { Background } from '@xyflow/react';
 import { Controls } from '@xyflow/react';
 import ResourceRecipe from '../NodeTypes/ResourceRecipe.jsx';
 import { sources } from '../satis/recipes_db.js';
-import { applyNodeChanges } from '@xyflow/react';
+import { forceLink, forceManyBody, forceSimulation, forceX, forceY } from 'd3-force';
+import collide from './collide.js';
+import { useNodesState } from '@xyflow/react';
+import { useEdgesState } from '@xyflow/react';
+import { useReactFlow } from '@xyflow/react';
+import { useNodesInitialized } from '@xyflow/react';
  
 const rfStyle = {
   backgroundColor: '#282330',
 };
 
+const simulation = forceSimulation()
+  .force('charge', forceManyBody().strength(-1000))
+  .force('x', forceX().x(0).strength(0.05))
+  .force('y', forceY().y(0).strength(0.05))
+  .force('collide', collide())
+  .alphaTarget(0.05)
+  .stop();
+
+  const useLayoutedElements = () => {
+    const { getNodes, setNodes, getEdges, fitView } = useReactFlow();
+    const initialized = useNodesInitialized();
+  
+    // You can use these events if you want the flow to remain interactive while
+    // the simulation is running. The simulation is typically responsible for setting
+    // the position of nodes, but if we have a reference to the node being dragged,
+    // we use that position instead.
+    const draggingNodeRef = useRef(null);
+    const dragEvents = useMemo(
+      () => ({
+        start: (_event, node) => (draggingNodeRef.current = node),
+        drag: (_event, node) => (draggingNodeRef.current = node),
+        stop: () => (draggingNodeRef.current = null),
+      }),
+      [],
+    );
+  
+    return useMemo(() => {
+      let nodes = getNodes().map((node) => ({
+        ...node,
+        x: node.position.x,
+        y: node.position.y,
+      }));
+      let edges = getEdges().map((edge) => edge);
+      let running = false;
+  
+      // If React Flow hasn't initialized our nodes with a width and height yet, or
+      // if there are no nodes in the flow, then we can't run the simulation!
+      if (!initialized || nodes.length === 0) return [false, {}, dragEvents];
+  
+      simulation.nodes(nodes).force(
+        'link',
+        forceLink(edges)
+          .id((d) => d.id)
+          .strength(0.05)
+          .distance(100),
+      );
+  
+      // The tick function is called every animation frame while the simulation is
+      // running and progresses the simulation one step forward each time.
+      const tick = () => {
+        getNodes().forEach((node, i) => {
+          const dragging = draggingNodeRef.current?.id === node.id;
+  
+          // Setting the fx/fy properties of a node tells the simulation to "fix"
+          // the node at that position and ignore any forces that would normally
+          // cause it to move.
+          if (dragging) {
+            nodes[i].fx = draggingNodeRef.current.position.x;
+            nodes[i].fy = draggingNodeRef.current.position.y;
+          } else {
+            delete nodes[i].fx;
+            delete nodes[i].fy;
+          }
+        });
+  
+        simulation.tick();
+        setNodes(
+          nodes.map((node) => ({
+            ...node,
+            position: { x: node.fx ?? node.x, y: node.fy ?? node.y },
+          })),
+        );
+  
+        window.requestAnimationFrame(() => {
+          // Give React and React Flow a chance to update and render the new node
+          // positions before we fit the viewport to the new layout.
+          fitView();
+  
+          // If the simulation hasn't been stopped, schedule another tick.
+          if (running) tick();
+        });
+      };
+  
+      const toggle = () => {
+        if (!running) {
+          getNodes().forEach((node, index) => {
+            let simNode = nodes[index];
+            Object.assign(simNode, node);
+            simNode.x = node.position.x;
+            simNode.y = node.position.y;
+          });
+        }
+        running = !running;
+        running && window.requestAnimationFrame(tick);
+      };
+  
+      const isRunning = () => running;
+  
+      return [true, { toggle, isRunning }, dragEvents];
+    }, [initialized, dragEvents, getNodes, getEdges, setNodes, fitView]);
+  };
 
 const nodeTypes = { TargetResource, SourceResource, ResourceRecipe };
  
 function PageFactory() {
-  const [nodes, setNodes] = useState([]);
-  const [edges, setEdges] = useState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [initialized, { toggle, isRunning }, dragEvents] =
+    useLayoutedElements();
  
   const [targetResources, setTargetResources] = useState({});
   const [selectedRecipes, setSelectedRecipes] = useState({});
@@ -162,32 +270,35 @@ function PageFactory() {
     
     setSelectedRecipes(res);
   });
- 
-  const onNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [],
-  );
   
   return (
     <>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
-        
-        fitView
-        style={rfStyle}
-        maxZoom={5}
-        minZoom={0.1}
-        nodesConnectable={false}
-        elementsSelectable={false}
-      >
-        <Background />
-        <Controls />
-      </ReactFlow>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          
+          fitView
+          style={rfStyle}
+          maxZoom={5}
+          minZoom={0.1}
+          nodesConnectable={false}
+          elementsSelectable={false}
+
+          onNodeDragStart={dragEvents.start}
+          onNodeDrag={dragEvents.drag}
+          onNodeDragStop={dragEvents.stop}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+        >
+          <Background />
+          <Controls />
+        </ReactFlow>
       <TargetSelector targetResources={targetResources} setTargetResources={setTargetResources} />
       <SelectedRecipes selectedRecipes={selectedRecipes} selectRecipe={onSelectRecipe} />
+      <div className="unveil" onClick={toggle}>
+        Unveil
+      </div>
     </>
   );
 }

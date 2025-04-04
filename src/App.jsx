@@ -3,6 +3,7 @@ import PageFactory from './jsx/PageFactory.jsx'
 import { useState } from 'react';
 import React from 'react';
 import MissingRecipesLogger from './jsx/MissingRecipesLogger.jsx';
+import { ReactFlowProvider } from '@xyflow/react';
 
 function App() {
   let [page, setPage] = useState('recipes');
@@ -16,7 +17,9 @@ function App() {
   }
 
   return <>
-    {page_jsx}
+    <ReactFlowProvider>
+      {page_jsx}
+    </ReactFlowProvider>
     <div className="page-selector">
       <div 
         className={page == 'recipes' ? 'selected' : ''}

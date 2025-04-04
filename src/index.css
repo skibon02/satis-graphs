@@ -180,3 +180,9 @@ body {
 .recipe-selector-item .container {
   background-color: rgb(153, 184, 194);
 }
+
+.unveil {
+  position: absolute;
+  left: 2em;
+  top: 2em;
+}
