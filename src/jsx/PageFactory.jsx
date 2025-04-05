@@ -14,8 +14,8 @@ import { Background } from '@xyflow/react';
 import { Controls } from '@xyflow/react';
 import ResourceRecipe from '../NodeTypes/ResourceRecipe.jsx';
 import { sources } from '../satis/recipes_db.js';
-import { forceLink, forceManyBody, forceSimulation, forceY } from 'd3-force';
-import { collide, edgeDirectionForce } from './collide.js';
+import { forceManyBody, forceSimulation, forceY } from 'd3-force';
+import { edgeDirectionForce } from './collide.js';
 import { useNodesState } from '@xyflow/react';
 import { useEdgesState } from '@xyflow/react';
 import { useReactFlow } from '@xyflow/react';
@@ -46,6 +46,11 @@ const useLayoutedElements = () => {
     }),
     [],
   );
+
+  const [updateId, setUpdateId] = useState(0);
+  const triggerUpdate = () => {
+    setUpdateId(updateId + 1);
+  }
   
   return useMemo(() => {
     let nodes = getNodes().map((node) => ({
@@ -59,12 +64,11 @@ const useLayoutedElements = () => {
   
     // If React Flow hasn't initialized our nodes with a width and height yet, or
     // if there are no nodes in the flow, then we can't run the simulation!
-    if (!initialized || nodes.length === 0) return [false, {}, dragEvents];
+    if (!initialized || nodes.length === 0) return [false, {toggle: () => {}, isRunning: () => false}, dragEvents];
 
 
     simulation.nodes(nodes)
       .force('charge', forceManyBody().strength(-500))
-      // .force('collide', collide().strength(0.1))
       .force('Y', forceY(0).strength(0.01))
       .force('edges', edgeDirectionForce().strength(0.8).edges(edges))
     ;
@@ -116,12 +120,17 @@ const useLayoutedElements = () => {
       }
       running = !running;
       running && window.requestAnimationFrame(tick);
+
+      if (!running) {
+        triggerUpdate();
+      }
+      console.log("running (inside)", running)
     };
   
     const isRunning = () => running;
   
     return [true, { toggle, isRunning }, dragEvents];
-  }, [initialized, dragEvents, getNodes, getEdges, setNodes, fitView]);
+  }, [initialized, dragEvents, getNodes, getEdges, setNodes, fitView, updateId]);
 };
   
 const nodeTypes = { TargetResource, SourceResource, ResourceRecipe };
@@ -293,11 +302,11 @@ function PageFactory() {
         </ReactFlow>
       <TargetSelector targetResources={targetResources} setTargetResources={setTargetResources} />
       <SelectedRecipes selectedRecipes={selectedRecipes} selectRecipe={onSelectRecipe} />
-      <div className="unveil" onClick={toggle}>
-        Unveil
+      <div className={isRunning() ? "unmangle active" : "unmangle"} onClick={toggle}>
+        Unmangle
       </div>
     </>
-  );
+  ); 
 }
  
 export default PageFactory;

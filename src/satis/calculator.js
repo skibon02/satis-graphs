@@ -259,4 +259,4 @@ function calculate(targetResources, cur_alt_recipes) {
 
 const [initial_nodes, initial_edges] = get_all_recipes(); 
 
-export {check_all_recipes, get_all_recipes, initial_nodes, initial_edges, all_recipes, generateAltRecipes, calculate};
+export {check_all_recipes, get_all_recipes, initial_nodes, initial_edges, all_recipes, generateAltRecipes, calculate, get_all_known_resources};

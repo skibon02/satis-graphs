@@ -1,7 +1,10 @@
 import React from "react";
-import { all_recipes } from "../satis/calculator";
+import { all_recipes, get_all_known_resources } from "../satis/calculator";
 import ResourceRateInput from "./ResourceRateInput";
-
+import { useMemo } from "react";
+import { sources } from "../satis/recipes_db";
+import Select from 'react-select';
+import {RcImage} from "./util.jsx"
 
 function TargetSelector({targetResources, setTargetResources}) {
     let targetSelectorItems = Object.entries(targetResources).map(([name, rate]) => {
@@ -20,16 +23,32 @@ function TargetSelector({targetResources, setTargetResources}) {
                 }}>Delete</p>
         </div>
     });
+
+    let all_resources = useMemo(() => {
+        let all_resources = get_all_known_resources();
+
+        let get_rc_name = (rcname) => {
+            return rcname.replaceAll(/\-/gi, " ")
+        }
+        return all_resources.filter((r) => !sources.includes(r))
+        .map(r=>{return {value: r, label: get_rc_name(r)}});
+    }, []);
     
     return (
         <div className="target-selector">
             <p>Select target resources</p>
             <div>
                 {targetSelectorItems}
-                <div 
-                    className="add-target-resource"
-                    onClick={() => {
-                        let name = prompt("Enter resource name", "smart-plating");
+                <Select 
+                    placeholder="+ Add new target"
+                    classNames={{
+                        control: () => 'add-target-resource',
+                        menu: () => 'add-target-resource-menu',
+                        placeholder: () => 'add-target-resource-placeholder',
+                        option: () => 'add-target-resource-option',
+                    }}
+                    onChange={(item) => {
+                        let name = item.value;
                         let recipes = all_recipes(name);
                         if (recipes == 'basic_resource') {
                             alert("Basic resource!");
@@ -49,9 +68,22 @@ function TargetSelector({targetResources, setTargetResources}) {
                         let res = {...targetResources};
                         res[name] = prev_rate + rate;
                         setTargetResources(res);
-                    }}>
-                    <p>+<br />Add target resource</p>
-                </div>
+
+                        return false;
+                    }} 
+                    formatOptionLabel={item => {
+                        let rcname = item.value;
+                        return (
+                            <>
+                                <RcImage rcname={rcname} />
+                                <span>{item.label}</span>
+                            </>
+                        )
+                    }}
+                    value={null}
+                    options={all_resources}
+                    components={{ DropdownIndicator:() => null, IndicatorSeparator:() => null }}
+                />
             </div>
         </div>
     )

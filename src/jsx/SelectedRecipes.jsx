@@ -2,15 +2,8 @@ import React, { memo } from "react";
 import Select from 'react-select';
 import { all_recipes } from "../satis/calculator";
 import right_arrow from "../assets/right-arrow.png"
+import {RcImage} from "./util.jsx"
 
-
-function RcImage({ rcname }) {
-    const baseUrl = import.meta.env.BASE_URL;
-    
-    return (
-        <img src={`${baseUrl}satis-rc/${rcname}.webp`} />
-    );
-}
 
 let SelectedRecipes = memo(function SelectedRecipes({selectedRecipes, selectRecipe}) {
     const recipeItems = Object.entries(selectedRecipes).map(([name, recipe_num]) => {
@@ -40,7 +33,7 @@ let SelectedRecipes = memo(function SelectedRecipes({selectedRecipes, selectReci
                         })
                         return <>
                             {ing_imgs}
-                            <img className="arrow" src={right_arrow} />
+                            <img className="arrow icon" src={right_arrow} />
                             {output_imgs}
                         </>
                     }}
