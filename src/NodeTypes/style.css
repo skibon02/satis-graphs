@@ -25,7 +25,18 @@
   border-right: 3px dashed rgb(34, 154, 252);
 
   padding: 1em;
+}
 
+.recipe-node > p {
+  text-align: center;
+  color: rgb(56, 130, 222);
+  font-weight: bold;
+  font-size: 1.5em;
+  margin: 0;
+  margin-bottom: .5em;
+}
+
+.recipe-node-cont {
   display: flex;
 }
 

@@ -4,9 +4,10 @@ import React from 'react';
 import './style.css'
 
 function ResourceRecipe({ data, isConnectable }) {
+  let output_rate = data.recipe.name == data.name ? data.recipe.output : data.recipe.output2;
+  let factor = data.rate / output_rate;
+
   let inputs = Object.entries(data.recipe.ingredients).map(([ing, inp_rate]) => {
-    let output_rate = data.recipe.name == data.name ? data.recipe.output : data.recipe.output2;
-    let factor = data.rate / output_rate;
     return <div key={ing} className='inp-cont'>
         <Handle 
           style={{
@@ -22,19 +23,22 @@ function ResourceRecipe({ data, isConnectable }) {
 
   return (
     <div className="recipe-node">
-      <div className='inputs'>
-        {inputs}
-      </div>
-      <div className='outputs'>
-        <Handle 
-          style={{
-            right: -10
-          }}
-          id={'out-' + data.recipe.name}
-          isConnectable={isConnectable}
-          position={Position.Right} 
-          type='source' />
-        <ResourceRate rcname={data.recipe.name} rate={data.rate} />
+      <p>{Math.round(factor * 1000) / 1000}</p>
+      <div className="recipe-node-cont">
+        <div className='inputs'>
+          {inputs}
+        </div>
+        <div className='outputs'>
+          <Handle 
+            style={{
+              right: -10
+            }}
+            id={'out-' + data.recipe.name}
+            isConnectable={isConnectable}
+            position={Position.Right} 
+            type='source' />
+          <ResourceRate rcname={data.recipe.name} rate={data.rate} />
+        </div>
       </div>
     </div>
   );
