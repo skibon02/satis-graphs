@@ -190,7 +190,7 @@ let alt_recipes = [
     },
     {
         name: "silica",
-        ouptup: 52.5,
+        ouptut: 52.5,
         ingredients: {
             "raw-quartz": 22.5,
             "limestone": 37.5,
