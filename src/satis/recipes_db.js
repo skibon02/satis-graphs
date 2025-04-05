@@ -190,7 +190,7 @@ let alt_recipes = [
     },
     {
         name: "silica",
-        ouptut: 52.5,
+        output: 52.5,
         ingredients: {
             "raw-quartz": 22.5,
             "limestone": 37.5,
