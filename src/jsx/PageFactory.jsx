@@ -14,8 +14,8 @@ import { Background } from '@xyflow/react';
 import { Controls } from '@xyflow/react';
 import ResourceRecipe from '../NodeTypes/ResourceRecipe.jsx';
 import { sources } from '../satis/recipes_db.js';
-import { forceLink, forceManyBody, forceSimulation, forceX, forceY } from 'd3-force';
-import collide from './collide.js';
+import { forceLink, forceManyBody, forceSimulation, forceY } from 'd3-force';
+import { collide, edgeDirectionForce } from './collide.js';
 import { useNodesState } from '@xyflow/react';
 import { useEdgesState } from '@xyflow/react';
 import { useReactFlow } from '@xyflow/react';
@@ -26,107 +26,104 @@ const rfStyle = {
 };
 
 const simulation = forceSimulation()
-  .force('charge', forceManyBody().strength(-1000))
-  .force('x', forceX().x(0).strength(0.05))
-  .force('y', forceY().y(0).strength(0.05))
-  .force('collide', collide())
   .alphaTarget(0.05)
   .stop();
 
-  const useLayoutedElements = () => {
-    const { getNodes, setNodes, getEdges, fitView } = useReactFlow();
-    const initialized = useNodesInitialized();
+const useLayoutedElements = () => {
+  const { getNodes, setNodes, getEdges, fitView } = useReactFlow();
+  const initialized = useNodesInitialized();
   
-    // You can use these events if you want the flow to remain interactive while
-    // the simulation is running. The simulation is typically responsible for setting
-    // the position of nodes, but if we have a reference to the node being dragged,
-    // we use that position instead.
-    const draggingNodeRef = useRef(null);
-    const dragEvents = useMemo(
-      () => ({
-        start: (_event, node) => (draggingNodeRef.current = node),
-        drag: (_event, node) => (draggingNodeRef.current = node),
-        stop: () => (draggingNodeRef.current = null),
-      }),
-      [],
-    );
+  // You can use these events if you want the flow to remain interactive while
+  // the simulation is running. The simulation is typically responsible for setting
+  // the position of nodes, but if we have a reference to the node being dragged,
+  // we use that position instead.
+  const draggingNodeRef = useRef(null);
+  const dragEvents = useMemo(
+    () => ({
+      start: (_event, node) => (draggingNodeRef.current = node),
+      drag: (_event, node) => (draggingNodeRef.current = node),
+      stop: () => (draggingNodeRef.current = null),
+    }),
+    [],
+  );
   
-    return useMemo(() => {
-      let nodes = getNodes().map((node) => ({
-        ...node,
-        x: node.position.x,
-        y: node.position.y,
-      }));
-      let edges = getEdges().map((edge) => edge);
-      let running = false;
+  return useMemo(() => {
+    let nodes = getNodes().map((node) => ({
+      ...node,
+      x: node.position.x,
+      y: node.position.y,
+    }));
+    let edges = getEdges().map((edge) => edge);
+
+    let running = false;
   
-      // If React Flow hasn't initialized our nodes with a width and height yet, or
-      // if there are no nodes in the flow, then we can't run the simulation!
-      if (!initialized || nodes.length === 0) return [false, {}, dragEvents];
+    // If React Flow hasn't initialized our nodes with a width and height yet, or
+    // if there are no nodes in the flow, then we can't run the simulation!
+    if (!initialized || nodes.length === 0) return [false, {}, dragEvents];
+
+
+    simulation.nodes(nodes)
+      .force('charge', forceManyBody().strength(-500))
+      // .force('collide', collide().strength(0.1))
+      .force('Y', forceY(0).strength(0.01))
+      .force('edges', edgeDirectionForce().strength(0.8).edges(edges))
+    ;
   
-      simulation.nodes(nodes).force(
-        'link',
-        forceLink(edges)
-          .id((d) => d.id)
-          .strength(0.05)
-          .distance(100),
+    // The tick function is called every animation frame while the simulation is
+    // running and progresses the simulation one step forward each time.
+    const tick = () => {
+      getNodes().forEach((node, i) => {
+        const dragging = draggingNodeRef.current?.id === node.id;
+  
+        // Setting the fx/fy properties of a node tells the simulation to "fix"
+        // the node at that position and ignore any forces that would normally
+        // cause it to move.
+        if (dragging) {
+          nodes[i].fx = draggingNodeRef.current.position.x;
+          nodes[i].fy = draggingNodeRef.current.position.y;
+        } else {
+          delete nodes[i].fx;
+          delete nodes[i].fy;
+        }
+      });
+  
+      simulation.tick();
+      setNodes(
+        nodes.map((node) => ({
+          ...node,
+          position: { x: node.fx ?? node.x, y: node.fy ?? node.y },
+        })),
       );
   
-      // The tick function is called every animation frame while the simulation is
-      // running and progresses the simulation one step forward each time.
-      const tick = () => {
-        getNodes().forEach((node, i) => {
-          const dragging = draggingNodeRef.current?.id === node.id;
+      window.requestAnimationFrame(() => {
+        // Give React and React Flow a chance to update and render the new node
+        // positions before we fit the viewport to the new layout.
+        fitView();
   
-          // Setting the fx/fy properties of a node tells the simulation to "fix"
-          // the node at that position and ignore any forces that would normally
-          // cause it to move.
-          if (dragging) {
-            nodes[i].fx = draggingNodeRef.current.position.x;
-            nodes[i].fy = draggingNodeRef.current.position.y;
-          } else {
-            delete nodes[i].fx;
-            delete nodes[i].fy;
-          }
+        // If the simulation hasn't been stopped, schedule another tick.
+        if (running) tick();
+      });
+    };
+  
+    const toggle = () => {
+      if (!running) {
+        getNodes().forEach((node, index) => {
+          let simNode = nodes[index];
+          Object.assign(simNode, node);
+          simNode.x = node.position.x;
+          simNode.y = node.position.y;
         });
+      }
+      running = !running;
+      running && window.requestAnimationFrame(tick);
+    };
   
-        simulation.tick();
-        setNodes(
-          nodes.map((node) => ({
-            ...node,
-            position: { x: node.fx ?? node.x, y: node.fy ?? node.y },
-          })),
-        );
+    const isRunning = () => running;
   
-        window.requestAnimationFrame(() => {
-          // Give React and React Flow a chance to update and render the new node
-          // positions before we fit the viewport to the new layout.
-          fitView();
+    return [true, { toggle, isRunning }, dragEvents];
+  }, [initialized, dragEvents, getNodes, getEdges, setNodes, fitView]);
+};
   
-          // If the simulation hasn't been stopped, schedule another tick.
-          if (running) tick();
-        });
-      };
-  
-      const toggle = () => {
-        if (!running) {
-          getNodes().forEach((node, index) => {
-            let simNode = nodes[index];
-            Object.assign(simNode, node);
-            simNode.x = node.position.x;
-            simNode.y = node.position.y;
-          });
-        }
-        running = !running;
-        running && window.requestAnimationFrame(tick);
-      };
-  
-      const isRunning = () => running;
-  
-      return [true, { toggle, isRunning }, dragEvents];
-    }, [initialized, dragEvents, getNodes, getEdges, setNodes, fitView]);
-  };
-
 const nodeTypes = { TargetResource, SourceResource, ResourceRecipe };
  
 function PageFactory() {
