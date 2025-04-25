@@ -12,7 +12,9 @@ let sources = [
     "water",
     "crude-oil",
     "sulfur",
-    "heavy-oil-residue"
+    "heavy-oil-residue",
+    "uranium",
+    "uranium-waste",
 ]
 
 
@@ -610,7 +612,7 @@ let recipes = {
     "alumina-solution": {
         output: 120,
         ingredients: {
-            "bauxite": 120,
+            "baxite": 120,
             "water": 180,
         }
     },
@@ -860,6 +862,15 @@ let recipes = {
             "iron-plate": 10,
         }
     },
+    "non-fissile-uranium": {
+        output: 50,
+        ingredients: {
+            "uranium-waste": 37.5,
+            "silica": 25,
+            "nitric-acid": 15,
+            "sulfuric-acid": 15,
+        }
+    },
     "nuclear-pasta": {
         output: 0.5,
         ingredients: {
@@ -887,6 +898,13 @@ let recipes = {
         ingredients: {
             "non-fissile-uranium": 100,
             "uranium-waste": 25,
+        }
+    },
+    "pressure-conversion-cube": {
+        output: 1,
+        ingredients: {
+            "radio-control-unit": 2,
+            "fused-modular-frame": 1,
         }
     },
     "quartz-crystal": {
