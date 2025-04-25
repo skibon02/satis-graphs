@@ -584,13 +584,6 @@ let alt_recipes = [
 ];
 
 let recipes = {
-    "ai-limiter": {
-        output: 5,
-        ingredients: {
-            "copper-sheet": 25,
-            "quickwire": 100,
-        }
-    },
     "adaptive-control-unit": {
         output: 1,
         ingredients: {
@@ -598,6 +591,55 @@ let recipes = {
             "circuit-board": 5,
             "heavy-modular-frame": 1,
             "computer": 2
+        }
+    },
+    "ai-limiter": {
+        output: 5,
+        ingredients: {
+            "copper-sheet": 25,
+            "quickwire": 100,
+        }
+    },
+    "alclad-aluminum-sheet": {
+        output: 30,
+        ingredients: {
+            "aluminum-ingot": 30,
+            "copper-sheet": 10,
+        }
+    },
+    "alumina-solution": {
+        output: 120,
+        ingredients: {
+            "bauxite": 120,
+            "water": 180,
+        }
+    },
+    "aluminum-casing": {
+        output: 60,
+        ingredients: {
+            "aluminum-ingot": 90,
+        }
+    },
+    "aluminum-ingot": {
+        output: 60,
+        ingredients: {
+            "aluminum-scrap": 90,
+            "silica": 75,
+        }
+    },
+    "aluminum-scrap": {
+        output: 360,
+        ingredients: {
+            "alumina-solution": 240,
+            "coal": 120,
+        }
+    },
+    "battery": {
+        output: 20,
+        ingredients: {
+            "sulfuric-acid": 50,
+            "alumina-solution": 40,
+            "aluminum-casing": 20,
         }
     },
     "assembly-director-system": {
@@ -661,10 +703,25 @@ let recipes = {
             "limestone": 45,
         }
     },
+    "cooling-system": {
+        output: 6,
+        ingredients: {
+            "heat-sink": 12,
+            "rubber": 12,
+            "water": 30,
+            "nitrogen-gas": 150,
+        }
+    },
     "copper-ingot": {
         output: 30,
         ingredients: {
             "copper-ore": 30,
+        }
+    },
+    "copper-powder": {
+        output: 50,
+        ingredients: {
+            "copper-ingot": 300,
         }
     },
     "copper-sheet": {
@@ -681,6 +738,13 @@ let recipes = {
             "reinforced-iron-plate": 2.5,
         }
     },
+    "electromagnetic-control-rod": {
+        output: 4,
+        ingredients: {
+            "stator": 6,
+            "ai-limiter": 4,
+        }
+    },
     "encased-industrial-beam": {
         output: 6,
         ingredients: {
@@ -688,10 +752,33 @@ let recipes = {
             "concrete": 36,
         }
     },
+    "encased-plutonium-cell": {
+        output: 5,
+        ingredients: {
+            "plutonium-pellet": 10,
+            "concrete": 20,
+        }
+    },
+    "encased-uranium-cell": {
+        output: 25,
+        ingredients: {
+            "uranium": 50,
+            "concrete": 15,
+            "sulfuric-acid": 40,
+        }
+    },
     "fuel": {
         output: 40,
         ingredients: {
             "heavy-oil-residue": 60
+        }
+    },
+    "fused-modular-frame": {
+        output: 1.5,
+        ingredients: {
+            "heavy-modular-frame": 1.5,
+            "aluminum-casing": 75,
+            "nitrogen-gas": 37.5,
         }
     },
     "heavy-modular-frame": {
@@ -701,6 +788,13 @@ let recipes = {
             "encased-industrial-beam": 10,
             "steel-pipe": 40,
             "screw": 240,
+        }
+    },
+    "heat-sink": {
+        output: 7.5,
+        ingredients: {
+            "alclad-aluminum-sheet": 37.5,
+            "copper-sheet": 22.5,
         }
     },
     "high-speed-connector": {
@@ -729,6 +823,13 @@ let recipes = {
             "iron-ingot": 15,
         }
     },
+    "magentic-field-generator": {
+        output: 1,
+        ingredients: {
+            "electromagnetic-control-rod": 1,
+            "versatile-framework": 2.5,
+        }
+    },
     "modular-engine": {
         output: 1,
         ingredients: {
@@ -751,10 +852,41 @@ let recipes = {
             "stator": 10,
         }
     },
+    "nitric-acid": {
+        output: 30,
+        ingredients: {
+            "nitrogen-gas": 120,
+            "water": 30,
+            "iron-plate": 10,
+        }
+    },
+    "nuclear-pasta": {
+        output: 0.5,
+        ingredients: {
+            "copper-powder": 100,
+            "pressure-conversion-cube": 0.5
+        }
+    },
     "petroleum-coke": {
         output: 120,
         ingredients: {
             "heavy-oil-residue": 40,
+        }
+    },
+    "plutonium-fuel-rod": {
+        output: 0.25,
+        ingredients: {
+            "encased-plutonium-cell": 7.5,
+            "steel-beam": 4.5,
+            "electromagnetic-control-rod": 1.5,
+            "heat-sink": 2.5,
+        }
+    },
+    "plutonium-pellet": {
+        output: 30,
+        ingredients: {
+            "non-fissile-uranium": 100,
+            "uranium-waste": 25,
         }
     },
     "quartz-crystal": {
@@ -769,11 +901,26 @@ let recipes = {
             "caterium-ingot": 12,
         }
     },
+    "radio-control-unit": {
+        output: 2.5,
+        ingredients: {
+            "aluminum-casing": 40,
+            "crystal-oscillator": 1.25,
+            "computer": 2.5,
+        }
+    },
     "reinforced-iron-plate": {
         output: 5,
         ingredients: {
             "iron-plate": 30,
             "screw": 60,
+        }
+    },
+    "rocket-fuel": {
+        output: 100,
+        ingredients: {
+            "turbofuel": 60,
+            "nitric-acid": 10,
         }
     },
     "rotor": {
@@ -828,6 +975,13 @@ let recipes = {
             "steel-ingot": 30,
         }
     },
+    "sulfuric-acid": {
+        output: 50,
+        ingredients: {
+            "sulfur": 50,
+            "water": 50,
+        }
+    },
     "supercomputer": {
         output: 1.875,
         ingredients: {
@@ -835,6 +989,39 @@ let recipes = {
             "ai-limiter": 3.75,
             "plastic": 52.5,
             "high-speed-connector": 5.625,
+        }
+    },
+    "thermal-propulsion-rocket": {
+        output: 1,
+        ingredients: {
+            "modular-engine": 2.5,
+            "turbo-motor": 1,
+            "cooling-system": 3,
+            "fused-modular-frame": 1,
+        }
+    },
+    "turbo-motor": {
+        output: 1.875,
+        ingredients: {
+            "cooling-system": 7.5,
+            "radio-control-unit": 3.75,
+            "motor": 7.5,
+            "rubber": 45,
+        }
+    },
+    "turbofuel": {
+        output: 30,
+        ingredients: {
+            "heavy-oil-residue": 37.5,
+            "compacted-coal": 30,
+        }
+    },
+    "uranium-fuel-rod": {
+        output: 0.4,
+        ingredients: {
+            "encased-uranium-cell": 20,
+            "encased-industrial-beam": 1.2,
+            "electromagnetic-control-rod": 2,
         }
     },
     "versatile-framework": {
