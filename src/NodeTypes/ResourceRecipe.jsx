@@ -5,6 +5,7 @@ import './style.css'
 
 function ResourceRecipe({ data, isConnectable }) {
   let output_rate = data.recipe.name == data.name ? data.recipe.output : data.recipe.output2;
+  let output_name = data.name;
   let factor = data.rate / output_rate;
 
   let inputs = Object.entries(data.recipe.ingredients).map(([ing, inp_rate]) => {
@@ -13,7 +14,7 @@ function ResourceRecipe({ data, isConnectable }) {
           style={{
             left: -30
           }}
-          id={'in-' + data.recipe.name + '-' + ing}
+          id={'in-' + output_name + '-' + ing}
           isConnectable={isConnectable}
           position={Position.Left} 
           type='target' />
@@ -33,11 +34,11 @@ function ResourceRecipe({ data, isConnectable }) {
             style={{
               right: -10
             }}
-            id={'out-' + data.recipe.name}
+            id={'out-' + output_name}
             isConnectable={isConnectable}
             position={Position.Right} 
             type='source' />
-          <ResourceRate rcname={data.recipe.name} rate={data.rate} />
+          <ResourceRate rcname={output_name} rate={data.rate} />
         </div>
       </div>
     </div>

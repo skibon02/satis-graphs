@@ -1,6 +1,7 @@
 
 
 let sources = [
+    "sam",
     "iron-ore",
     "copper-ore",
     "raw-quartz",
@@ -12,15 +13,43 @@ let sources = [
     "water",
     "crude-oil",
     "sulfur",
-    "heavy-oil-residue",
     "uranium",
     "uranium-waste",
+    // "heavy-oil-residue",
+
+    "power-shard",
+    "excited-photonic-matter",
 ]
 
 
 let alt_recipes = [
-    // refinery
+    //converter
+    {
+        name: "ficsite-ingot",
+        output: 30,
+        ingredients: {
+            "reanimated-sam": 60,
+            "aluminum-ingot": 120,
+        }
+    },
+    {
+        name: "ficsite-ingot",
+        output: 15,
+        ingredients: {
+            "reanimated-sam": 45,
+            "caterium-ingot": 60,
+        }
+    },
+    {
+        name: "ficsite-ingot",
+        output: 10,
+        ingredients: {
+            "reanimated-sam": 40,
+            "iron-ingot": 240,
+        }
+    },
 
+    // refinery
     {
         name: "plastic",
         output: 20,
@@ -73,7 +102,77 @@ let alt_recipes = [
         }
     },
 
+    // energy
+    {
+        name: "energy",
+        output: 250,
+        ingredients: {
+            "fuel": 20,
+        }
+    },
+    {
+        name: "energy",
+        output: 250,
+        ingredients: {
+            "turbofuel": 7.5,
+        }
+    },
+    {
+        name: "energy",
+        output: 250,
+        ingredients: {
+            "rocket-fuel": 4 + 1/6,
+        }
+    },
+    {
+        name: "energy",
+        output: 250,
+        ingredients: {
+            "ionized-fuel": 3,
+        }
+    },
+    {
+        name: "energy",
+        output: 2500,
+        name2: "uranium-waste",
+        output2: 10,
+        ingredients: {
+            "uranium-fuel-rod": 0.2,
+            "water": 240,
+        }
+    },
+    {
+        name: "energy",
+        output: 2500,
+        name2: "plutonium-waste",
+        output2: 1,
+        ingredients: {
+            "plutonium-fuel-rod": 0.1,
+            "water": 240,
+        }
+    },
+    {
+        name: "energy",
+        output: 2500,
+        ingredients: {
+            "ficsonium-fuel-rod": 1,
+            "water": 240,
+        }
+    },
+
     // alt recipes
+    {
+        name: "rocket-fuel",
+        output: 150,
+        name2: "compacted-coal",
+        output2: 25,
+        ingredients: {
+            "fuel": 100,
+            "nitrogen-gas": 75,
+            "sulfur": 100,
+            "coal": 50
+        }
+    },
     {
         name: "caterium-ingot",
         output: 12,
@@ -582,6 +681,38 @@ let alt_recipes = [
             "limestone": 120,
             "water": 100,
         }
+    },
+    {
+        name: "rocket-fuel",
+        output: 100,
+        name2: "compacted-coal",
+        output2: 10,
+        ingredients: {
+            "turbofuel": 60,
+            "nitric-acid": 10,
+        },
+    },
+    {
+        name: "ionized-fuel",
+        output: 40,
+        name2: "compacted-coal",
+        output2: 5,
+        ingredients: {
+            "rocket-fuel": 40,
+            "power-shard": 2.5,
+        },
+    },
+    {
+        name: "ficsonium-fuel-rod",
+        output: 2.5,
+        name2: "dark-matter-residue",
+        output2: 50,
+        ingredients: {
+            "ficsonium": 5,
+            "electromagnetic-control-rod": 5,
+            "ficsite-trigon": 100,
+            "excited-photonic-matter": 50,
+        }
     }
 ];
 
@@ -740,6 +871,19 @@ let recipes = {
             "reinforced-iron-plate": 2.5,
         }
     },
+    "dark-matter-crystal": {
+        output: 30,
+        ingredients: {
+            "diamonds": 30,
+            "dark-matter-residue": 150
+        }
+    },
+    "diamonds": {
+        output: 30,
+        ingredients: {
+            "coal": 600
+        }
+    },
     "electromagnetic-control-rod": {
         output: 4,
         ingredients: {
@@ -767,6 +911,20 @@ let recipes = {
             "uranium": 50,
             "concrete": 15,
             "sulfuric-acid": 40,
+        }
+    },
+    "ficsite-trigon": {
+        output: 30,
+        ingredients: {
+            "ficsite-ingot": 10,
+        }
+    },
+    "ficsonium": {
+        output: 10,
+        ingredients: {
+            "plutonium-waste": 10,
+            "singularity-cell": 10,
+            "dark-matter-residue": 200,
         }
     },
     "fuel": {
@@ -825,7 +983,7 @@ let recipes = {
             "iron-ingot": 15,
         }
     },
-    "magentic-field-generator": {
+    "magnetic-field-generator": {
         output: 1,
         ingredients: {
             "electromagnetic-control-rod": 1,
@@ -927,18 +1085,17 @@ let recipes = {
             "computer": 2.5,
         }
     },
+    "reanimated-sam": {
+        output: 30,
+        ingredients: {
+            "sam": 120,
+        }
+    },
     "reinforced-iron-plate": {
         output: 5,
         ingredients: {
             "iron-plate": 30,
             "screw": 60,
-        }
-    },
-    "rocket-fuel": {
-        output: 100,
-        ingredients: {
-            "turbofuel": 60,
-            "nitric-acid": 10,
         }
     },
     "rotor": {
@@ -958,6 +1115,15 @@ let recipes = {
         output: 37.5,
         ingredients: {
             "raw-quartz": 22.5,
+        }
+    },
+    "singularity-cell": {
+        output: 10,
+        ingredients: {
+            "nuclear-pasta": 1,
+            "dark-matter-crystal": 20,
+            "iron-plate": 100,
+            "concrete": 200,
         }
     },
     "smart-plating": {

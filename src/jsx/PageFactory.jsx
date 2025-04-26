@@ -186,8 +186,8 @@ function PageFactory() {
           edges.push({
             id: Math.random(),
             source: 'source-' + ing,
-            target: 'recipe-' + recipe.name,
-            targetHandle: 'in-' + recipe.name + '-' + ing
+            target: 'recipe-' + rcname,
+            targetHandle: 'in-' + rcname + '-' + ing
           })
         }
         else {
@@ -197,8 +197,8 @@ function PageFactory() {
             source: 'recipe-' + ing,
             sourceHandle: 'out-' + ing,
 
-            target: 'recipe-' + recipe.name,
-            targetHandle: 'in-' + recipe.name + '-' + ing
+            target: 'recipe-' + rcname,
+            targetHandle: 'in-' + rcname + '-' + ing
           })
         }
       }
