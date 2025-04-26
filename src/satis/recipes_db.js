@@ -162,6 +162,42 @@ let alt_recipes = [
 
     // alt recipes
     {
+        name: "uranium-fuel-rod",
+        output: 0.6,
+        ingredients: {
+            "encased-uranium-cell": 20,
+            "electromagnetic-control-rod": 2,
+            "crystal-oscillator": 0.6,
+            "rotor": 2,
+        }
+    },
+    {
+        name: "electromagnetic-control-rod",
+        output: 8,
+        ingredients: {
+            "stator": 8,
+            "high-speed-connector": 4
+        }
+    },
+    {
+        name: "aluminum-casing",
+        output: 112.5,
+        ingredients: {
+            "aluminum-ingot": 150,
+            "copper-ingot": 75
+        }
+    },
+    {
+        name: "battery",
+        output: 30,
+        ingredients: {
+            "sulfur": 45,
+            "alclad-aluminum-sheet": 52.5,
+            "plastic": 60,
+            "wire": 90
+        }
+    },
+    {
         name: "rocket-fuel",
         output: 150,
         name2: "compacted-coal",
