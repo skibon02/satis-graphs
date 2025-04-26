@@ -7,7 +7,7 @@ let sources = [
     "raw-quartz",
     "coal",
     "caterium-ore",
-    "baxite",
+    "bauxite",
     "limestone",
     "nitrogen-gas",
     "water",
@@ -749,6 +749,242 @@ let alt_recipes = [
             "ficsite-trigon": 100,
             "excited-photonic-matter": 50,
         }
+    },
+    {
+        name: "turbo-motor",
+        output: 3.75,
+        ingredients: {
+            "motor": 7.5,
+            "pressure-conversion-cube": 1.875,
+            "nitrogen-gas": 45,
+            "stator": 15
+        }
+    },
+    {
+        name: "turbo-motor",
+        output: 2.8125,
+        ingredients: {
+            "motor": 6.5625,
+            "radio-control-unit": 8.4375,
+            "electromagnetic-control-rod": 4.6875,
+            "rotor": 6.5625
+        }
+    },
+    {
+        name: "turbofuel",
+        output: 45,
+        ingredients: {
+            "fuel": 15,
+            "heavy-oil-residue": 30,
+            "sulfur": 22.5,
+            "petroleum-coke": 22.5
+        }
+    },
+    {
+        name: "supercomputer",
+        output: 2.4,
+        ingredients: {
+            "computer": 7.2,
+            "electromagnetic-control-rod": 2.4,
+            "battery": 24,
+            "wire": 60
+        }
+    },
+    {
+        name: "alumina-solution",
+        output: 240,
+        ingredients: {
+            "bauxite": 200,
+            "water": 200
+        }
+    },
+    {
+        name: "radio-control-unit",
+        output: 4.5,
+        ingredients: {
+            "crystal-oscillator": 1.5,
+            "circuit-board": 15,
+            "aluminum-casing": 90,
+            "rubber": 45,
+        }
+    },
+    {
+        name: "radio-control-unit",
+        output: 3.75,
+        ingredients: {
+            "heat-sink": 15,
+            "high-speed-connector": 7.5,
+            "quartz-crystal": 45,
+        }
+    },
+    {
+        name: "quartz-crystal",
+        output: 75,
+        name2: "dissolved-silica",
+        output2: 60,
+        ingredients: {
+            "raw-quartz": 120,
+            "nitric-acid": 10,
+        }
+    },
+    {
+        name: "aluminum-ingot",
+        output: 30,
+        ingredients: {
+            "aluminum-scrap": 60
+        }
+    },
+    {
+        name: "plutonium-fuel-rod",
+        output: 0.5,
+        ingredients: {
+            "encased-plutonium-cell": 10,
+            "pressure-conversion-cube": 0.5
+        }
+    },
+    {
+        name: "supercomputer",
+        output: 3,
+        ingredients: {
+            "radio-control-unit": 6,
+            "cooling-system": 6,
+        }
+    },
+    {
+        name: "iron-ingot",
+        output: 100,
+        ingredients: {
+            "iron-ore": 50,
+            "sulfuric-acid": 10
+        }
+    },
+    {
+        name: "copper-ingot",
+        output: 110,
+        ingredients: {
+            "copper-ore": 45,
+            "sulfuric-acid": 25
+        }
+    },
+    {
+        name: "caterium-ingot",
+        output: 36,
+        ingredients: {
+            "caterium-ore": 54,
+            "sulfuric-acid": 30
+        }
+    },
+    {
+        name: "aluminum-scrap",
+        output: 300,
+        name2: "water",
+        output2: 50,
+        ingredients: {
+            "bauxite": 150,
+            "coal": 100,
+            "sulfuric-acid": 50,
+            "water": 60,
+        }
+    },
+    {
+        name: "encased-plutonium-cell",
+        output: 10,
+        ingredients: {
+            "non-fissile-uranium": 75,
+            "aluminum-casing": 10,
+        }
+    },
+    {
+        name: "encased-uranium-cell",
+        output: 20,
+        ingredients: {
+            "uranium": 25,
+            "silica": 15,
+            "sulfur": 25,
+            "quickwire": 75,
+        }
+    },
+    {
+        name: "fused-modular-frame",
+        output: 3,
+        ingredients: {
+            "heavy-modular-frame": 3,
+            "aluminum-ingot": 150,
+            "nitric-acid": 24,
+            "fuel": 30
+        }
+    },
+    {
+        name: "heat-sink",
+        output: 10,
+        ingredients: {
+            "aluminum-casing": 30,
+            "rubber": 30
+        }
+    },
+    {
+        name: "non-fissile-uranium",
+        output: 100,
+        name2: "water",
+        output2: 40,
+        ingredients: {
+            "uranium": 25,
+            "uranium-waste": 25,
+            "nitric-acid": 15,
+            "sulfuric-acid": 25,
+        }
+    },
+    {
+        name: "aluminum-scrap",
+        output: 300,
+        name2: "water",
+        output2: 105,
+        ingredients: {
+            "alumina-solution": 180,
+            "petroleum-coke": 60,
+        }
+    },
+    {
+        name: "motor",
+        output: 7.5,
+        ingredients: {
+            "electromagnetic-control-rod": 3.75,
+            "rotor": 7.5
+        }
+    },
+    {
+        name: "silica",
+        output: 270,
+        name2: "water",
+        output2: 80,
+        ingredients: {
+            "dissolved-silica": 120,
+            "limestone": 50,
+            "water": 100,
+        }
+    },
+    {
+        name: "cooling-system",
+        output: 5,
+        ingredients: {
+            "nitrogen-gas": 60,
+            "motor": 2.5,
+            "heat-sink": 10
+        }
+    },
+    {
+        name: "iron-rod",
+        output: 52.5,
+        ingredients: {
+            "aluminum-ingot": 7.5
+        }
+    },
+    {
+        name: "steel-beam",
+        output: 22.5,
+        ingredients: {
+            "aluminum-ingot": 22.5
+        }
     }
 ];
 
@@ -779,7 +1015,7 @@ let recipes = {
     "alumina-solution": {
         output: 120,
         ingredients: {
-            "baxite": 120,
+            "bauxite": 120,
             "water": 180,
         }
     },
