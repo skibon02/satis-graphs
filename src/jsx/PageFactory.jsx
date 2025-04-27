@@ -335,7 +335,7 @@ function PageFactory() {
     }
     
     setSelectedRecipes(res);
-  });
+  }, []);
   
   return (
     <>

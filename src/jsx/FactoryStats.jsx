@@ -2,12 +2,14 @@ import React from "react";
 import { resourceIconUrl } from "./util";
 import ResourceRate from "./ResourceRate";
 import recycling from "../assets/recycling.png"
+import { memo } from "react";
 
-const FactoryStats = ({stats}) => {
+const FactoryStats = memo(({stats}) => {
     let secondary_outputs = Object.entries(stats.secondaryOutputs).map(([rcname, rate]) => {
         return <ResourceRate rcname={rcname} rate={rate}/>
     });
-    return (<div className="factory-stats">
+    return (
+        <div className="factory-stats">
             <p className="factory-stats-title">Factory stats</p>
             <div className="energy flex-row">
                 <img src={resourceIconUrl("energy")}/>
@@ -18,6 +20,8 @@ const FactoryStats = ({stats}) => {
                 <p className="flex-row"><img src={recycling}/>Secondary outputs:</p>
                 { secondary_outputs }
             </div>
-        </div>);
-}
+        </div>
+    );
+})
+
 export default FactoryStats;

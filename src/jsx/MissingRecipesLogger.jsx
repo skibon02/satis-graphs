@@ -10,10 +10,12 @@ const MissingRecipesLogger = () => {
     });
 
     if (missing_list.length > 0) {
-        return (<div className="missing-resource-list">
-            <p className="missing-resource-title">Missing recipes:</p>
-            {missing_list}
-        </div>)
+        return (
+            <div className="missing-resource-list">
+                <p className="missing-resource-title">Missing recipes:</p>
+                {missing_list}
+            </div>
+        )
     }
     else {
         return <></>

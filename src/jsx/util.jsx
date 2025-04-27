@@ -4,7 +4,6 @@ function resourceIconUrl(rcname) {
     const baseUrl = import.meta.env.BASE_URL;
     return `${baseUrl}satis-rc/${rcname}.webp`;
 }
-  
 
 function RcImage({ rcname }) {
     return (

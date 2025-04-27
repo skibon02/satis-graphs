@@ -5,7 +5,7 @@ import right_arrow from "../assets/right-arrow.png"
 import {RcImage} from "./util.jsx"
 
 
-let SelectedRecipes = memo(function SelectedRecipes({selectedRecipes, selectRecipe}) {
+let SelectedRecipes = memo(function SelectedRecipes({ selectedRecipes, selectRecipe }) {
     const recipeItems = Object.entries(selectedRecipes).map(([name, recipe_num]) => {
         let recipes = all_recipes(name);
         let recipe = recipes[recipe_num];

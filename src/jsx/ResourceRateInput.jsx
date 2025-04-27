@@ -1,4 +1,4 @@
-
+import React from "react";
 
 function ResourceRateInput({ rcname, rate, setRate }) {
   const rounded_rate = Math.round(rate * 1000) / 1000;
