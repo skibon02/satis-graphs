@@ -8,8 +8,16 @@ function ResourceRecipe({ data, isConnectable }) {
   let output_name = data.name;
   let factor = data.rate / output_rate;
 
+  let secondary_output_rate = data.recipe.name == data.name ? data.recipe.output2 : data.recipe.output;
+  let secondary_output_name = data.recipe.name == data.name ? data.recipe.name2 : data.recipe.name;
+  secondary_output_rate *= factor;
+
+  if (!secondary_output_name) {
+    secondary_output_rate = null;
+  }
+
   let inputs = Object.entries(data.recipe.ingredients).map(([ing, inp_rate]) => {
-    return <div key={ing} className='inp-cont'>
+    return <div key={ing} className='cont'>
         <Handle 
           style={{
             left: -30
@@ -30,15 +38,29 @@ function ResourceRecipe({ data, isConnectable }) {
           {inputs}
         </div>
         <div className='outputs'>
-          <Handle 
-            style={{
-              right: -10
-            }}
-            id={'out-' + output_name}
-            isConnectable={isConnectable}
-            position={Position.Right} 
-            type='source' />
-          <ResourceRate rcname={output_name} rate={data.rate} />
+          <div className='cont'>
+            <Handle 
+              style={{
+                right: -30
+              }}
+              id={'out-' + output_name}
+              isConnectable={isConnectable}
+              position={Position.Right} 
+              type='source' />
+            <ResourceRate rcname={output_name} rate={data.rate} />
+          </div>
+          { secondary_output_rate && 
+            <div className='cont'>
+              <Handle 
+              style={{
+                right: -30
+              }}
+              id={'secondary-out-' + output_name}
+              isConnectable={isConnectable}
+              position={Position.Right} 
+              type='source' />
+              <ResourceRate rcname={secondary_output_name} rate={secondary_output_rate} />
+          </div>}
         </div>
       </div>
     </div>

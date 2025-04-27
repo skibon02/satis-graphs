@@ -1,5 +1,5 @@
 
-.target-resource-node, .source-resource-node {
+.target-resource-node, .source-resource-node, .secondary-resource-node {
   background-color: rgb(83, 83, 83);
   border: 1px solid white;
   padding: .5em 1em;
@@ -9,11 +9,15 @@
   border-left: 3px dashed rgb(254, 166, 58)
 }
 
+.secondary-resource-node {
+  border-left: 3px dashed rgb(53, 196, 34);
+}
+
 .source-resource-node {
   border-right: 3px dashed rgb(34, 154, 252);
 }
 
-.target-resource-node p, .source-resource-node p {
+.target-resource-node p, .source-resource-node p, .secondary-resource-node p {
   margin: .2em;
   color: rgb(187, 177, 208);
 }
@@ -40,7 +44,7 @@
   display: flex;
 }
 
-.recipe-node .inputs .inp-cont {
+.recipe-node .cont {
   position: relative;
 }
 

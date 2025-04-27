@@ -24,10 +24,6 @@ function all_recipes(rcname) {
         return "basic_resource";
     }
 
-    if (rcname == "sulfuric-acid") {
-        debugger
-    }
-
     if (recipes_cache[rcname]) {
       return recipes_cache[rcname];
     }

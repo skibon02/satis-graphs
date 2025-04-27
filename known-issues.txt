@@ -1,5 +1,3 @@
-- display secondary output in recipe nodes
-- recursion sometimes (sulfur-silica-sulfur)
 - нет различия между жидкостями и упакованными жидкостями
 
 ## future improvements

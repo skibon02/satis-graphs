@@ -22,6 +22,7 @@ import { useReactFlow } from '@xyflow/react';
 import { useNodesInitialized } from '@xyflow/react';
 import FactoryStats from './FactoryStats.jsx';
 import machines from '../satis/machines_db.js';
+import SecondaryResource from '../NodeTypes/SecondaryResource.jsx';
  
 const rfStyle = {
   backgroundColor: '#282330',
@@ -135,7 +136,7 @@ const useLayoutedElements = () => {
   }, [initialized, dragEvents, getNodes, getEdges, setNodes, fitView, updateId]);
 };
   
-const nodeTypes = { TargetResource, SourceResource, ResourceRecipe };
+const nodeTypes = { TargetResource, SourceResource, ResourceRecipe, SecondaryResource };
  
 function PageFactory() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -200,7 +201,16 @@ function PageFactory() {
         if (!secondaryOutputs[secondary_name]) {
           secondaryOutputs[secondary_name] = 0;
         }
-        secondaryOutputs[secondary_name] += secondary_output * rate / recipe_output
+        secondaryOutputs[secondary_name] += secondary_output * rate / recipe_output;
+
+        // add secondary output edge
+        edges.push({
+          id: 'secondary-out-' + rcname + 'secondary-' + secondary_name,
+          source: 'recipe-' + rcname,
+          sourceHandle: 'secondary-out-' + rcname,
+
+          target: 'secondary-' + secondary_name,
+        })
       }
 
       for (let ing in recipe.ingredients) {
@@ -214,7 +224,7 @@ function PageFactory() {
           }
 
           edges.push({
-            id: Math.random(),
+            id: 'source-' + ing + 'in-' + rcname + '-' + ing,
             source: 'source-' + ing,
             target: 'recipe-' + rcname,
             targetHandle: 'in-' + rcname + '-' + ing
@@ -222,7 +232,7 @@ function PageFactory() {
         }
         else {
           edges.push({
-            id: Math.random(),
+            id: 'out-' + ing + 'in-' + rcname + '-' + ing,
 
             source: 'recipe-' + ing,
             sourceHandle: 'out-' + ing,
@@ -250,6 +260,23 @@ function PageFactory() {
     }
 
     cnt = 0;
+    for (let rcname in sourceResources) {
+      nodes.push({
+        id: 'source-' + rcname,
+        position: {
+          x: -500,
+          y: cnt * 200,
+        },
+        type: 'SourceResource',
+        data: {
+          rcname,
+          rate: sourceResources[rcname]
+        }
+      });
+      cnt++;
+    }
+
+    cnt = 0;
     for (let rcname in targetResources) {
       nodes.push({
         id: 'target-' + rcname,
@@ -264,7 +291,7 @@ function PageFactory() {
         }
       });
       edges.push({
-        id: Math.random(),
+        id: 'out-' + rcname + 'target-' + rcname,
         source: 'recipe-' + rcname,
         sourceHandle: 'out-' + rcname,
         target: 'target-' + rcname,
@@ -272,19 +299,18 @@ function PageFactory() {
       cnt++;
     }
 
-
-    cnt = 0;
-    for (let rcname in sourceResources) {
+    // add secondary outputs nodes
+    for (let [rcname, rate] of Object.entries(secondaryOutputs)) {
       nodes.push({
-        id: 'source-' + rcname,
+        id: 'secondary-' + rcname,
         position: {
-          x: -500,
+          x: 500,
           y: cnt * 200,
         },
-        type: 'SourceResource',
+        type: 'SecondaryResource',
         data: {
           rcname,
-          rate: sourceResources[rcname]
+          rate
         }
       });
       cnt++;
