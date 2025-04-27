@@ -262,6 +262,14 @@ function calculate(targetResources, cur_alt_recipes) {
     return res;
 }
 
+
+function power_multiplier(overclock_speed, somersloop_filled) {
+    return Math.pow(1+somersloop_filled, 2)*Math.pow(overclock_speed, 1.321928)
+}
+
 const [initial_nodes, initial_edges] = get_all_recipes(); 
 
-export {check_all_recipes, get_all_recipes, initial_nodes, initial_edges, all_recipes, generateAltRecipes, calculate, get_all_known_resources};
+export {check_all_recipes, get_all_recipes, 
+    initial_nodes, initial_edges, all_recipes, 
+    generateAltRecipes, calculate, get_all_known_resources, 
+    power_multiplier};

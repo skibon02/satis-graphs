@@ -9,7 +9,7 @@ import SourceResource from '../NodeTypes/SourceResource.jsx';
 import React from 'react';
 import TargetSelector from './TargetSelector.jsx';
 import SelectedRecipes from './SelectedRecipes.jsx';
-import { calculate, generateAltRecipes } from '../satis/calculator.js';
+import { calculate, generateAltRecipes, power_multiplier } from '../satis/calculator.js';
 import { Background } from '@xyflow/react';
 import { Controls } from '@xyflow/react';
 import ResourceRecipe from '../NodeTypes/ResourceRecipe.jsx';
@@ -72,7 +72,7 @@ const useLayoutedElements = () => {
 
     simulation.nodes(nodes)
       .force('charge', forceManyBody().strength(-500))
-      .force('Y', forceY(0).strength(0.01))
+      .force('Y', forceY(0).strength(0.007))
       .force('edges', edgeDirectionForce().strength(0.8).edges(edges))
     ;
   
@@ -145,8 +145,13 @@ function PageFactory() {
     useLayoutedElements();
  
   const [targetResources, setTargetResources] = useState({});
+
+  // key: rcname
+  // value: recipeIndex
   const [selectedRecipes, setSelectedRecipes] = useState({});
 
+  // key: rcname + recipeIndex
+  // value: {powerShards: 1, somersloop: 0}
   const [selectedModifiers, setSelectedModifiers] = useState({});
 
   const [stats, setStats] = useState({secondaryOutputs: {}});
@@ -189,12 +194,41 @@ function PageFactory() {
       let rate = recipe_info.rate;
       let recipe = recipe_info.recipe;
       let recipe_output = rcname === recipe.name ? recipe.output : recipe.output2;
+      let multiplier = rate / recipe_output;
+
+      // modifiers
+      let max_power_shards = Math.ceil(multiplier / 2.5) * 3;
+      let cur_power_shards = 0;
+      let cur_somersloops = 0;
+      if (selectedModifiers[rcname + selectedRecipes[rcname]]) {
+        cur_power_shards = selectedModifiers[rcname + selectedRecipes[rcname]].power_shards;
+        cur_somersloops = selectedModifiers[rcname + selectedRecipes[rcname]].somersloops;
+      }
+      cur_power_shards = Math.min(cur_power_shards, max_power_shards);
+
+      let max_somersloops = Math.ceil(multiplier) * machines[recipe.machine].somersloop_slots;
+      cur_somersloops = Math.min(cur_somersloops, max_somersloops);
+      let set_modifiers = (power_shards, somersloops) => {
+        let modified = {};
+        Object.assign(modified, selectedModifiers);
+        modified[rcname+selectedRecipes[rcname]] = {
+          power_shards,
+          somersloops,
+        }
+        setSelectedModifiers(modified)
+      };
 
       if (recipe_info.recipe.machine) {
-        let base_consumption = recipe_info.recipe.machine && machines[recipe_info.recipe.machine];
-        total_consumption += base_consumption * rate / recipe_output;
+        debugger
+        let base_consumption = recipe_info.recipe.machine && machines[recipe_info.recipe.machine].energy;
+        let somersloop_factor = 0;
+        if (machines[recipe_info.recipe.machine].somersloop_slots) {
+          somersloop_factor = cur_somersloops / machines[recipe_info.recipe.machine].somersloop_slots
+        }
+        total_consumption += base_consumption * multiplier * power_multiplier(1 + cur_power_shards / multiplier * 0.5, somersloop_factor);
       }
 
+      // secondary output check
       if (rcname === recipe.name && recipe.name2 || rcname === recipe.name2 && recipe.name) {
         let secondary_name = rcname === recipe.name ? recipe.name2 : recipe.name;
         let secondary_output = rcname === recipe.name ? recipe.output2 : recipe.output;
@@ -202,7 +236,7 @@ function PageFactory() {
         if (!secondaryOutputs[secondary_name]) {
           secondaryOutputs[secondary_name] = 0;
         }
-        secondaryOutputs[secondary_name] += secondary_output * rate / recipe_output;
+        secondaryOutputs[secondary_name] += secondary_output * multiplier;
 
         // add secondary output edge
         edges.push({
@@ -214,9 +248,11 @@ function PageFactory() {
         })
       }
 
+
+
       for (let ing in recipe.ingredients) {
         if (sources.includes(ing)) {
-          let input_rate = rate / recipe_output * recipe.ingredients[ing];
+          let input_rate = multiplier * recipe.ingredients[ing];
           if (sourceResources[ing]) {
             sourceResources[ing] += input_rate;
           }
@@ -254,7 +290,25 @@ function PageFactory() {
         data: {
           rate,
           recipe,
-          name: rcname
+          name: rcname,
+          cur_power_shards,
+          cur_somersloops,
+          set_power_shards: (v) => {
+            if (v instanceof Function) {
+              set_modifiers(v(cur_power_shards), cur_somersloops)
+            }
+            else {
+              set_modifiers(v, cur_somersloops)
+            }
+          },
+          set_somersloops: (v) => {
+            if (v instanceof Function) {
+              set_modifiers(cur_power_shards, v(cur_somersloops))
+            }
+            else {
+              set_modifiers(cur_power_shards, v)
+            }
+          },
         }
       });
       cnt++;
