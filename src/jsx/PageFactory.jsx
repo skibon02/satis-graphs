@@ -150,19 +150,28 @@ function PageFactory() {
   const [stats, setStats] = useState({secondaryOutputs: {}});
 
   useEffect(() => {
+    const startTime = performance.now();
+    
     let res = generateAltRecipes(targetResources, selectedRecipes);
     if (res == "recursion_detected") {
       alert ("Recursion detected!");
       return
     }
+    const endTime = performance.now()
+    console.log(`Updating alt recipes took ${endTime - startTime} milliseconds`)
     
     setSelectedRecipes(res)
   }, [targetResources])
   
   useEffect(() => {
+    const startTime = performance.now();
+
     let res = calculate(targetResources, selectedRecipes);
     if (res == "recursion_detected") {
       alert("Recursion detected!");
+      const endTime = performance.now()
+      console.log(`Calculating factory recipes took ${endTime - startTime} milliseconds`)  
+      
       return;
     }
 
@@ -281,6 +290,9 @@ function PageFactory() {
       cnt++;
     }
 
+    const endTime = performance.now()
+    console.log(`Calculating factory recipes took ${endTime - startTime} milliseconds`)  
+    
     setEdges(edges);
     setNodes(nodes);
     setStats({energy: total_consumption, secondaryOutputs});

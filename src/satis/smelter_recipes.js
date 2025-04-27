@@ -1,6 +1,6 @@
 
 
-const smelter_recipes = [
+const smelter_base_recipes = [
     {
         name: "caterium-ingot",
         output: 15,
@@ -22,6 +22,9 @@ const smelter_recipes = [
             "iron-ore": 30,
         }
     },
+];
+
+const smelter_alt_recipes = [
     {
         name: "aluminum-ingot",
         output: 30,
@@ -30,5 +33,10 @@ const smelter_recipes = [
         }
     },
 ];
+
+for (let recipe of smelter_base_recipes) {
+    recipe.base = true
+}
+const smelter_recipes = smelter_base_recipes.concat(smelter_alt_recipes);
 
 export default smelter_recipes;

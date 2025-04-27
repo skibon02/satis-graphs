@@ -1,5 +1,5 @@
 
-const constructor_recipes = [
+const constructor_base_recipes = [
     {
         name: "aluminum-casing",
         output: 60,
@@ -106,6 +106,10 @@ const constructor_recipes = [
             "copper-ingot": 15,
         }
     },
+];
+
+const constructor_alt_recipes = [
+    
     {
         name: "steel-beam",
         output: 22.5,
@@ -163,5 +167,11 @@ const constructor_recipes = [
         }
     },
 ];
+
+for (const recipe of constructor_base_recipes) {
+    recipe.base = true
+}
+
+const constructor_recipes = constructor_base_recipes.concat(constructor_alt_recipes);
 
 export default constructor_recipes;

@@ -64,5 +64,8 @@ const energy_recipes = [
         }
     },
 ];
+for (let recipe of energy_recipes) {
+    recipe.base = true;
+}
 
 export default energy_recipes;

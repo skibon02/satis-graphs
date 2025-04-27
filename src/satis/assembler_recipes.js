@@ -1,5 +1,5 @@
 
-const assembler_recipes = [
+const assembler_base_recipes = [
     {
         name: "ai-limiter",
         output: 5,
@@ -159,9 +159,9 @@ const assembler_recipes = [
             "steel-beam": 30,
         }
     },
+];
 
-
-    // alt
+const assembler_alt_recipes = [
     {
         name: "reinforced-iron-plate",
         output: 3.75,
@@ -402,5 +402,10 @@ const assembler_recipes = [
         },
     },
 ];
+
+for (let recipe of assembler_base_recipes) {
+    recipe.base = true;
+}
+const assembler_recipes = assembler_base_recipes.concat(assembler_alt_recipes);
 
 export default assembler_recipes;

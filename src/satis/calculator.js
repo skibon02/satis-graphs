@@ -18,9 +18,18 @@ function get_all_known_resources() {
     return Object.keys(res);
 }
 
+const recipes_cache = {};
 function all_recipes(rcname) {
     if (sources.includes(rcname)) {
         return "basic_resource";
+    }
+
+    if (rcname == "sulfuric-acid") {
+        debugger
+    }
+
+    if (recipes_cache[rcname]) {
+      return recipes_cache[rcname];
     }
 
     let res = []
@@ -36,54 +45,64 @@ function all_recipes(rcname) {
         }
     }
 
+    for (let i = 0; i < res.length; i++) {
+        if (res[i].base && res[i].name === rcname) {
+            let tmp = res[0];
+            res[0] = res[i];
+            res[i] = tmp;
+            break;
+        }
+    }
+
+    recipes_cache[rcname] = res;
     return res;
 }
 
 
- 
-function traverseResource(rcname, select_recipe, rate=0, for_each = (rcname, recipe, rate) => {}) {
-  let rc_stack = [{rcname, rate}];
-  let visited = new Set();
-  while (rc_stack.length > 0) {
-    let rc = rc_stack.shift();
-    let rcname = rc.rcname;
-    let rcrate = rc.rate;
+function traverseResource(rcname, select_recipe, rate = 0, for_each = (rcname, recipe, rate) => {}, path = new Set()) {
+    if (path.has(rcname)) {
+        return "recursion_detected"; // нашли цикл, возвращаем сигнал наверх
+    }
+    path.add(rcname);
+
+    console.log(`traverseResource ${rcname}`);
+    let path_str = `   Current path: `;
+    for (let el of path.values()) {
+        path_str += el + " => ";
+    }
+    path_str += 'X';
+    console.log(path_str);
 
     let recipes = all_recipes(rcname);
     if (recipes === "basic_resource") {
-      continue;
+    path.delete(rcname);
+        return; // конец ветки
     }
 
     let recipe_num;
     if (recipes.length > 1) {
-      // use callback to determine recipe
-      recipe_num = select_recipe(rcname, recipes);
-    }
-    else {
-      recipe_num = 0;
+        recipe_num = select_recipe(rcname, recipes);
+    } else {
+        recipe_num = 0;
     }
     let recipe = recipes[recipe_num];
-    for_each(rcname, recipe, rcrate);
 
+    for_each(rcname, recipe, rate); // делаем что-то полезное с рецептом
 
-    let rec_resolved = false;
+    let out_rate = recipe.name === rcname ? recipe.output : recipe.output2;
+
     for (let ing in recipe.ingredients) {
-      if (visited.has(ing)) {
-        continue;
-      }
-      rec_resolved = true;
+        let ing_rate = rate / out_rate * recipe.ingredients[ing];
+        let result = traverseResource(ing, select_recipe, ing_rate, for_each, path);
+        if (result === "recursion_detected") {
+            console.log("    Recursion detected!");
+            return "recursion_detected";
+        }
+    }
 
-      let out_rate = recipe.name === rcname ? recipe.output : recipe.output2;
-      rc_stack.push({
-        rcname: ing,
-        rate: rcrate / out_rate * recipe.ingredients[ing],
-      })
-    }
-    if (!rec_resolved) {
-      return "recursion_detected";
-    }
-  }
+    path.delete(rcname); // откатываем путь обратно при выходе
 }
+
 
 function find_missing_recipes(rcname, callStack = new Set()) {
     if (callStack.has(rcname)) {

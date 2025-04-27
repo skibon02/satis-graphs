@@ -1,4 +1,4 @@
-const manufacturer_recipes = [
+const manufacturer_base_recipes = [
     {
         name: "adaptive-control-unit",
         output: 1,
@@ -133,6 +133,10 @@ const manufacturer_recipes = [
             "electromagnetic-control-rod": 2,
         }
     },
+];
+
+const manufacturer_alt_recipes = [
+    
     {
         name: "automated-wiring",
         output: 7.5,
@@ -295,6 +299,12 @@ const manufacturer_recipes = [
             "rotor": 2,
         }
     },
-];
+]
+
+for (let recipe of manufacturer_base_recipes) {
+    recipe.base = true
+}
+
+const manufacturer_recipes = manufacturer_base_recipes.concat(manufacturer_alt_recipes);
 
 export default manufacturer_recipes;

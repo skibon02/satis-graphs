@@ -1,4 +1,4 @@
-const refinery_recipes = [
+const refinery_base_recipes = [
     {
         name: "alumina-solution",
         output: 120,
@@ -110,8 +110,10 @@ const refinery_recipes = [
             "water": 50,
         }
     },
+];
 
-    // alt
+const refinery_alt_recipes = [
+    
     {
         name: "cable",
         output: 67.5,
@@ -272,5 +274,11 @@ const refinery_recipes = [
         }
     },
 ];
+
+for (let recipe of refinery_base_recipes) {
+    recipe.base = true;
+}
+
+const refinery_recipes = refinery_base_recipes.concat(refinery_alt_recipes);
 
 export default refinery_recipes;

@@ -1,5 +1,5 @@
 
-const blender_recipes = [
+const blender_base_recipes = [
     {
         name: "battery",
         output: 20,
@@ -72,6 +72,10 @@ const blender_recipes = [
             "nitric-acid": 10,
         },
     },
+];
+
+const blender_alt_recipes = [
+    
     {
         name: "cooling-system",
         output: 5,
@@ -157,5 +161,10 @@ const blender_recipes = [
         }
     },
 ];
+
+for (let recipe of blender_base_recipes) {
+    recipe.base = true;
+}
+const blender_recipes = blender_base_recipes.concat(blender_alt_recipes);
 
 export default blender_recipes;

@@ -1,4 +1,4 @@
-const foundry_recipes = [
+const foundry_base_recipes = [
     {
         name: "aluminum-ingot",
         output: 60,
@@ -15,8 +15,11 @@ const foundry_recipes = [
             "coal": 45,
         }
     },
+];
 
-    //alt
+const foundry_alt_recipes = [
+    
+
     {
         name: "iron-ingot",
         output: 50,
@@ -114,5 +117,10 @@ const foundry_recipes = [
         }
     },
 ];
+
+for (let recipe of foundry_base_recipes) {
+    recipe.base = true
+}
+const foundry_recipes = foundry_base_recipes.concat(foundry_alt_recipes);
 
 export default foundry_recipes;
