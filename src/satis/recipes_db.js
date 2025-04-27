@@ -138,37 +138,40 @@ const recipes = [
     }
 ];
 
-for (let recipe of assembler_recipes) {
-    recipe.machine = "assembler";
-    recipes.push(recipe);
-}
-for (let recipe of constructor_recipes) {
-    recipe.machine = "constructor";
-    recipes.push(recipe);
-}
-for (let recipe of manufacturer_recipes) {
-    recipe.machine = "manufacturer";
-    recipes.push(recipe);
-}
-for (let recipe of smelter_recipes) {
-    recipe.machine = "smelter";
-    recipes.push(recipe);
-}
-for (let recipe of foundry_recipes) {
-    recipe.machine = "foundry";
-    recipes.push(recipe);
-}
-for (let recipe of blender_recipes) {
-    recipe.machine = "blender";
-    recipes.push(recipe);
-}
-for (let recipe of energy_recipes) {
-    recipe.machine = "energy-generator";
-    recipes.push(recipe);
-}
-for (let recipe of refinery_recipes) {
-    recipe.machine = "refinery";
-    recipes.push(recipe);
+const recipes_added = false;
+if (!recipes_added) {
+    for (let recipe of assembler_recipes) {
+        recipe.machine = "assembler";
+        recipes.push(recipe);
+    }
+    for (let recipe of constructor_recipes) {
+        recipe.machine = "constructor";
+        recipes.push(recipe);
+    }
+    for (let recipe of manufacturer_recipes) {
+        recipe.machine = "manufacturer";
+        recipes.push(recipe);
+    }
+    for (let recipe of smelter_recipes) {
+        recipe.machine = "smelter";
+        recipes.push(recipe);
+    }
+    for (let recipe of foundry_recipes) {
+        recipe.machine = "foundry";
+        recipes.push(recipe);
+    }
+    for (let recipe of blender_recipes) {
+        recipe.machine = "blender";
+        recipes.push(recipe);
+    }
+    for (let recipe of energy_recipes) {
+        recipe.machine = "energy-generator";
+        recipes.push(recipe);
+    }
+    for (let recipe of refinery_recipes) {
+        recipe.machine = "refinery";
+        recipes.push(recipe);
+    }
 }
 
 export {sources, recipes};
