@@ -91,27 +91,27 @@ function traverseResource(rcname, select_recipe, rate = 0, for_each = (rcname, r
 }
 
 
-const find_missing_recipes_cache = {};
+const missing_recipes_checked = {};
 function find_missing_recipes(rcname, callStack = new Set()) {
     if (callStack.has(rcname)) {
         return {};
     }
 
-    if (find_missing_recipes_cache[rcname]) {
-        return find_missing_recipes_cache[rcname];
+    if (missing_recipes_checked[rcname]) {
+        return {};
     }
 
     let res = {};
     let recipes = all_recipes(rcname);
     
     if (recipes === "basic_resource") {
-        find_missing_recipes_cache[rcname] = res;
+        missing_recipes_checked[rcname] = true;
         return res;
     }
     
     if (recipes.length == 0) {
         res[rcname] = true;
-        find_missing_recipes_cache[rcname] = res;
+        missing_recipes_checked[rcname] = true;
         return res;
     }
 
@@ -125,7 +125,7 @@ function find_missing_recipes(rcname, callStack = new Set()) {
     }
     callStack.delete(rcname);
 
-    find_missing_recipes_cache[rcname] = res;
+    missing_recipes_checked[rcname] = true;
     return res;
 }
 
