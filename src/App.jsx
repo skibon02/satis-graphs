@@ -4,6 +4,7 @@ import { useState } from 'react';
 import React from 'react';
 import MissingRecipesLogger from './jsx/MissingRecipesLogger.jsx';
 import { ReactFlowProvider } from '@xyflow/react';
+import FactoryStats from './jsx/FactoryStats.jsx';
 
 function App() {
   let [page, setPage] = useState('recipes');

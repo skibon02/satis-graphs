@@ -1,15 +1,12 @@
-import {recipes, sources, alt_recipes} from './recipes_db.js'
+import {recipes, sources} from './recipes_db.js'
 
 function get_all_known_resources() {
     let res = {};
 
-    for (let name in recipes) {
-        res[name] = true;
-    }
     for (let name of sources) {
         res[name] = true;
     }
-    for (let recipe of alt_recipes) {
+    for (let recipe of recipes) {
         let name = recipe.name;
         res[name] = true;
 
@@ -26,16 +23,10 @@ function all_recipes(rcname) {
         return "basic_resource";
     }
 
-    // Search for basic recipe
-    let basic_recipe = recipes[rcname];
     let res = []
-    if (basic_recipe) {
-        basic_recipe.name = rcname;
-        res.push(basic_recipe);
-    }
 
-    // Search alt recipes
-    for (let recipe of alt_recipes) {
+    // Search recipes
+    for (let recipe of recipes) {
         if (rcname == recipe.name) {
             res.push(recipe);
         }

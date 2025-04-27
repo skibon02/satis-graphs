@@ -89,6 +89,47 @@ body {
   margin-bottom: 1em;
 }
 
+.factory-stats {
+  position: absolute;
+  top: 30%;
+  left: 1em;
+  transform: translateY(-50%);
+  
+  border-radius: .5em;
+  background-color: #5c5764;
+  padding: .5em;
+}
+.factory-stats-title {
+  color: white;
+  border-bottom: 1px solid white;
+  margin-bottom: .5em;
+  font-weight: 700;
+}
+.flex-row {
+  display: flex;
+  align-items: center;
+}
+
+.factory-stats .energy > * {
+  padding: .2em;
+}
+
+.factory-stats .energy p, .factory-stats .secondary-outputs {
+  font-size: 1.2em;
+}
+.factory-stats .secondary-outputs img {
+  width: 2em;
+}
+
+.factory-stats .energy .value {
+  color: rgb(230, 110, 235);
+  font-weight: bold;
+}
+
+.factory-stats .energy img {
+  height: 2em;
+}
+
 .target-selector {
   position: absolute;
   left: 50%;

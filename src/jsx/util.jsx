@@ -1,12 +1,15 @@
 import React from "react";
 
+function resourceIconUrl(rcname) {
+    const baseUrl = import.meta.env.BASE_URL;
+    return `${baseUrl}satis-rc/${rcname}.webp`;
+}
+  
 
 function RcImage({ rcname }) {
-    const baseUrl = import.meta.env.BASE_URL;
-    
     return (
-        <img className="icon" src={`${baseUrl}satis-rc/${rcname}.webp`} />
+        <img className="icon" src={resourceIconUrl(rcname)} />
     );
 }
 
-export { RcImage };
+export { RcImage, resourceIconUrl };

@@ -20,6 +20,8 @@ import { useNodesState } from '@xyflow/react';
 import { useEdgesState } from '@xyflow/react';
 import { useReactFlow } from '@xyflow/react';
 import { useNodesInitialized } from '@xyflow/react';
+import FactoryStats from './FactoryStats.jsx';
+import machines from '../satis/machines_db.js';
  
 const rfStyle = {
   backgroundColor: '#282330',
@@ -145,6 +147,8 @@ function PageFactory() {
   const [selectedRecipes, setSelectedRecipes] = useState({});
   const [calculatedRecipes, setCalculatedRecipes] = useState({});
 
+  const [stats, setStats] = useState({secondaryOutputs: {}});
+
   useEffect(() => {
     let res = generateAltRecipes(targetResources, selectedRecipes);
     if (res == "recursion_detected") {
@@ -162,17 +166,34 @@ function PageFactory() {
       return;
     }
 
+    let total_consumption = 0;
     let nodes = [];
     let edges = [];
 
     let sourceResources = {};
+    let secondaryOutputs = {};
 
     let cnt = 0;
     for (let [rcname, recipe_info] of Object.entries(res)) {
       let rate = recipe_info.rate;
       let recipe = recipe_info.recipe;
-
       let recipe_output = rcname === recipe.name ? recipe.output : recipe.output2;
+
+      if (recipe_info.recipe.machine) {
+        let base_consumption = recipe_info.recipe.machine && machines[recipe_info.recipe.machine];
+        total_consumption += base_consumption * rate / recipe_output;
+      }
+
+      if (rcname === recipe.name && recipe.name2 || rcname === recipe.name2 && recipe.name) {
+        let secondary_name = rcname === recipe.name ? recipe.name2 : recipe.name;
+        let secondary_output = rcname === recipe.name ? recipe.output2 : recipe.output;
+        
+        if (!secondaryOutputs[secondary_name]) {
+          secondaryOutputs[secondary_name] = 0;
+        }
+        secondaryOutputs[secondary_name] += secondary_output * rate / recipe_output
+      }
+
       for (let ing in recipe.ingredients) {
         if (sources.includes(ing)) {
           let input_rate = rate / recipe_output * recipe.ingredients[ing];
@@ -262,7 +283,7 @@ function PageFactory() {
 
     setEdges(edges);
     setNodes(nodes);
-
+    setStats({energy: total_consumption, secondaryOutputs});
   }, [selectedRecipes])
 
   const onSelectRecipe = useCallback((recipe) => {
@@ -305,6 +326,7 @@ function PageFactory() {
       <div className={isRunning() ? "unmangle active" : "unmangle"} onClick={toggle}>
         Unmangle
       </div>
+      <FactoryStats stats={stats} />
     </>
   ); 
 }
