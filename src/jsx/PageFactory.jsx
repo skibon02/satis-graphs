@@ -146,7 +146,8 @@ function PageFactory() {
  
   const [targetResources, setTargetResources] = useState({});
   const [selectedRecipes, setSelectedRecipes] = useState({});
-  const [calculatedRecipes, setCalculatedRecipes] = useState({});
+
+  const [selectedModifiers, setSelectedModifiers] = useState({});
 
   const [stats, setStats] = useState({secondaryOutputs: {}});
 
@@ -322,7 +323,7 @@ function PageFactory() {
     setEdges(edges);
     setNodes(nodes);
     setStats({energy: total_consumption, secondaryOutputs});
-  }, [selectedRecipes])
+  }, [selectedRecipes, selectedModifiers])
 
   const onSelectRecipe = useCallback((recipe) => {
     selectedRecipes[recipe.name] = recipe.recipe_num;

@@ -2,6 +2,9 @@ import { Handle, Position } from '@xyflow/react';
 import ResourceRate from '../jsx/ResourceRate.jsx'
 import React from 'react';
 import './style.css'
+import powerShard from '../assets/Power_Shard.webp';
+import somersloop from '../assets/Somersloop.webp';
+import { useState } from 'react';
 
 function ResourceRecipe({ data, isConnectable }) {
   let output_rate = data.recipe.name == data.name ? data.recipe.output : data.recipe.output2;
@@ -29,6 +32,9 @@ function ResourceRecipe({ data, isConnectable }) {
         <ResourceRate rcname={ing} rate={inp_rate * factor} />
       </div>
   });
+
+  let [v, setv] = useState(1);
+  let [v2, setv2] = useState(2);
 
   return (
     <div className="recipe-node">
@@ -61,6 +67,28 @@ function ResourceRecipe({ data, isConnectable }) {
               type='source' />
               <ResourceRate rcname={secondary_output_name} rate={secondary_output_rate} />
           </div>}
+        </div>
+      </div>
+      <div className="modifiers">
+        <div className="modifier">
+          <img src={powerShard} alt="Power Shard" />
+          <button onClick={() => setv(v => Math.max(0, v - 1))}>-</button>
+          <input
+            type="number"
+            value={v}
+            onChange={ev => setv(Number(ev.target.value))}
+          />
+          <button onClick={() => setv(v => v + 1)}>+</button>
+        </div>
+        <div className="modifier">
+          <img src={somersloop} alt="Somersloop" />
+          <button onClick={() => setv2(v2 => Math.max(0, v2 - 1))}>-</button>
+          <input
+            type="number"
+            value={v2}
+            onChange={ev => setv2(Number(ev.target.value))}
+          />
+          <button onClick={() => setv2(v2 => v2 + 1)}>+</button>
         </div>
       </div>
     </div>

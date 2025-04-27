@@ -52,3 +52,54 @@
 .recipe-node .outputs {
   margin-left: 2em;
 } 
+
+.recipe-node .modifiers {
+  display: flex;
+  align-items: center;
+}
+
+.modifiers {
+  display: flex;
+  gap: .7em;
+}
+
+.modifier {
+  display: flex;
+  align-items: center;
+  background-color: orange;
+  padding: 0.5em .8em;
+  border-radius: 1em;
+}
+
+.modifier:nth-child(2) {
+  background-color: rgb(224, 20, 115);
+}
+
+.modifier img {
+  width: 1.2em;
+  margin-right: .3em;
+}
+
+.modifier button {
+  background-color: white;
+  border: none;
+  border-radius: 0.3em;
+  padding: 0.2em 0.5em;
+  cursor: pointer;
+  font-size: .8em;
+  background-color: rgb(203, 230, 247);
+}
+
+.modifier input {
+  width: 2em;
+  text-align: center;
+  border: none;
+  font-size: 1em;
+  background: transparent;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
