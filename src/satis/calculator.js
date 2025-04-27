@@ -61,14 +61,6 @@ function traverseResource(rcname, select_recipe, rate = 0, for_each = (rcname, r
     }
     path.add(rcname);
 
-    console.log(`traverseResource ${rcname}`);
-    let path_str = `   Current path: `;
-    for (let el of path.values()) {
-        path_str += el + " => ";
-    }
-    path_str += 'X';
-    console.log(path_str);
-
     let recipes = all_recipes(rcname);
     if (recipes === "basic_resource") {
     path.delete(rcname);
@@ -91,7 +83,6 @@ function traverseResource(rcname, select_recipe, rate = 0, for_each = (rcname, r
         let ing_rate = rate / out_rate * recipe.ingredients[ing];
         let result = traverseResource(ing, select_recipe, ing_rate, for_each, path);
         if (result === "recursion_detected") {
-            console.log("    Recursion detected!");
             return "recursion_detected";
         }
     }

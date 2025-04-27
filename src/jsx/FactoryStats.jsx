@@ -4,9 +4,9 @@ import ResourceRate from "./ResourceRate";
 import recycling from "../assets/recycling.png"
 import { memo } from "react";
 
-const FactoryStats = memo(({stats}) => {
+const FactoryStats = ({stats}) => {
     let secondary_outputs = Object.entries(stats.secondaryOutputs).map(([rcname, rate]) => {
-        return <ResourceRate rcname={rcname} rate={rate}/>
+        return <ResourceRate key={rcname} rcname={rcname} rate={rate}/>
     });
     return (
         <div className="factory-stats">
@@ -22,6 +22,6 @@ const FactoryStats = memo(({stats}) => {
             </div>
         </div>
     );
-})
+}
 
 export default FactoryStats;

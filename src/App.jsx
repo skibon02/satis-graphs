@@ -7,7 +7,7 @@ import { ReactFlowProvider } from '@xyflow/react';
 import FactoryStats from './jsx/FactoryStats.jsx';
 
 function App() {
-  let [page, setPage] = useState('recipes');
+  let [page, setPage] = useState('factory');
 
   let page_jsx = <p>Как ты тут оказался? *-*</p>;
   if (page == 'recipes') {
@@ -23,15 +23,15 @@ function App() {
     </ReactFlowProvider>
     <div className="page-selector">
       <div 
-        className={page == 'recipes' ? 'selected' : ''}
-        onClick={() => {
-          setPage('recipes');
-        }}>Recipes</div>
-      <div 
         className={page == 'factory' ? 'selected' : ''}
         onClick={() => {
           setPage('factory');
         }}>Factory</div>
+      <div 
+        className={page == 'recipes' ? 'selected' : ''}
+        onClick={() => {
+          setPage('recipes');
+        }}>Recipes</div>
     </div>
     <div className="floating">
       <MissingRecipesLogger />
