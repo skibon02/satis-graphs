@@ -54,29 +54,32 @@
 } 
 
 .recipe-node .modifiers {
+  margin-top: .5em;
   display: flex;
-  align-items: center;
-}
-
-.modifiers {
-  display: flex;
-  gap: .7em;
+  flex-direction: column;
+  gap: .4em;
+  align-items: start;
 }
 
 .modifier {
   display: flex;
-  align-items: center;
+  gap: 1em;
+}
+
+.modifier .cont {
+  display: flex;
   background-color: orange;
   padding: 0.5em .8em;
   border-radius: 1em;
+  align-items: center;
 }
 
-.modifier:nth-child(2) {
+.modifier:nth-child(2) .cont {
   background-color: rgb(224, 20, 115);
 }
 
 .modifier img {
-  width: 1.2em;
+  height: 2em;
   margin-right: .3em;
 }
 
@@ -96,6 +99,31 @@
   border: none;
   font-size: 1em;
   background: transparent;
+}
+
+.top-modifiers {
+  position: absolute;
+
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%) translateY(-97%);
+  background-color: rgb(83, 83, 83);
+  padding: .2em .5em;
+
+  border-radius: .5em .5em 0 0;
+  border: 2px solid white;
+  border-bottom: 0;
+}
+
+.top-modifiers > div {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  color: orange;
+}
+
+.top-modifiers img {
+  width: 3em;
 }
 
 input[type=number]::-webkit-inner-spin-button,

@@ -185,14 +185,22 @@ function PageFactory() {
     let total_consumption = 0;
     let total_power_shards = 0;
     let total_somersloops = 0;
-    let nodes = [];
-    let edges = [];
+    let new_nodes = [];
+    let new_edges = [];
+
+    let y_start = nodes.reduce((prev, cur) => Math.max(prev, cur.position.y), 0) + 500;
+    debugger;
+    let x_source = -800;
+    let y_source = y_start;
+    let x_recipe = 0;
+    let y_recipe = y_start;
+    let x_target = 800;
+    let y_target = y_start;
 
     let sourceResources = {};
     let secondaryOutputs = {};
 
 
-    let cnt = 0;
     for (let [rcname, recipe_info] of Object.entries(res)) {
       let rate = recipe_info.rate;
       let recipe = recipe_info.recipe;
@@ -228,7 +236,6 @@ function PageFactory() {
       };
 
       if (recipe_info.recipe.machine) {
-        debugger
         let base_consumption = recipe_info.recipe.machine && machines[recipe_info.recipe.machine].energy;
         let somersloop_factor = 0;
         if (machines[recipe_info.recipe.machine].somersloop_slots) {
@@ -248,7 +255,7 @@ function PageFactory() {
         secondaryOutputs[secondary_name] += secondary_output * multiplier;
 
         // add secondary output edge
-        edges.push({
+        new_edges.push({
           id: 'secondary-out-' + rcname + 'secondary-' + secondary_name,
           source: 'recipe-' + rcname,
           sourceHandle: 'secondary-out-' + rcname,
@@ -267,7 +274,7 @@ function PageFactory() {
             sourceResources[ing] = input_rate;
           }
 
-          edges.push({
+          new_edges.push({
             id: 'source-' + ing + 'in-' + rcname + '-' + ing,
             source: 'source-' + ing,
             target: 'recipe-' + rcname,
@@ -275,7 +282,7 @@ function PageFactory() {
           })
         }
         else {
-          edges.push({
+          new_edges.push({
             id: 'out-' + ing + 'in-' + rcname + '-' + ing,
 
             source: 'recipe-' + ing,
@@ -287,11 +294,12 @@ function PageFactory() {
         }
       }
 
-      nodes.push({
+      let prev_node = nodes.find(v=>v.id == 'recipe-'+rcname);
+      new_nodes.push({
         id: 'recipe-' + rcname,
         position: {
-          x: 0,
-          y: cnt * 200,
+          x: prev_node ? prev_node.position.x : x_recipe,
+          y: prev_node ? prev_node.position.y : y_recipe,
         },
         type: 'ResourceRecipe',
         data: {
@@ -301,6 +309,8 @@ function PageFactory() {
           name: rcname,
           cur_power_shards,
           cur_somersloops,
+          max_power_shards,
+          max_somersloops,
           set_power_shards: (v) => {
             if (v instanceof Function) {
               set_modifiers(v(cur_power_shards), cur_somersloops)
@@ -319,16 +329,18 @@ function PageFactory() {
           },
         }
       });
-      cnt++;
+      if (!prev_node) {
+        y_recipe += 200;
+      }
     }
 
-    cnt = 0;
     for (let rcname in sourceResources) {
-      nodes.push({
+      let prev_node = nodes.find(v=>v.id == 'source-' + rcname);
+      new_nodes.push({
         id: 'source-' + rcname,
         position: {
-          x: -500,
-          y: cnt * 200,
+          x: prev_node ? prev_node.position.x : x_source,
+          y: prev_node ? prev_node.position.y : y_source,
         },
         type: 'SourceResource',
         data: {
@@ -336,16 +348,18 @@ function PageFactory() {
           rate: sourceResources[rcname]
         }
       });
-      cnt++;
+      if (!prev_node) {
+        y_source += 200;
+      }
     }
 
-    cnt = 0;
     for (let rcname in targetResources) {
-      nodes.push({
+      let prev_node = nodes.find(v=>v.id == 'target-' + rcname);
+      new_nodes.push({
         id: 'target-' + rcname,
         position: {
-          x: 500,
-          y: cnt * 200,
+          x: prev_node ? prev_node.position.x : x_target,
+          y: prev_node ? prev_node.position.y : y_target,
         },
         type: 'TargetResource',
         data: {
@@ -353,22 +367,25 @@ function PageFactory() {
           rate: targetResources[rcname]
         }
       });
-      edges.push({
+      new_edges.push({
         id: 'out-' + rcname + 'target-' + rcname,
         source: 'recipe-' + rcname,
         sourceHandle: 'out-' + rcname,
         target: 'target-' + rcname,
       })
-      cnt++;
+      if (!prev_node) {
+        y_target += 200;
+      }
     }
 
     // add secondary outputs nodes
     for (let [rcname, rate] of Object.entries(secondaryOutputs)) {
-      nodes.push({
+      let prev_node = nodes.find(v=>v.id == 'secondary-' + rcname);
+      new_nodes.push({
         id: 'secondary-' + rcname,
         position: {
-          x: 500,
-          y: cnt * 200,
+          x: prev_node ? prev_node.position.x : x_target,
+          y: prev_node ? prev_node.position.y : y_target,
         },
         type: 'SecondaryResource',
         data: {
@@ -376,14 +393,16 @@ function PageFactory() {
           rate
         }
       });
-      cnt++;
+      if (!prev_node) {
+        y_target += 200;
+      }
     }
 
     const endTime = performance.now()
     console.log(`Calculating factory recipes took ${endTime - startTime} milliseconds`)  
     
-    setEdges(edges);
-    setNodes(nodes);
+    setEdges(new_edges);
+    setNodes(new_nodes);
     setStats({energy: total_consumption, secondaryOutputs, total_power_shards, total_somersloops});
   }, [selectedRecipes, selectedModifiers])
 
