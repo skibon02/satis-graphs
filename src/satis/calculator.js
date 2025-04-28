@@ -267,9 +267,20 @@ function power_multiplier(overclock_speed, somersloop_filled) {
     return Math.pow(1+somersloop_filled, 2)*Math.pow(overclock_speed, 1.321928)
 }
 
+function machines_total(machine_requirement, power_shards) {
+    return Math.ceil(machine_requirement - (power_shards * 0.5));
+}
+function power_shards_max(machines_requirement) {
+    let tmp_shards = 0;
+    while (Math.ceil(tmp_shards / 3)<=machines_total(machines_requirement, tmp_shards)) {
+        tmp_shards++;
+    }
+    return tmp_shards - 1;
+}
+
 const [initial_nodes, initial_edges] = get_all_recipes(); 
 
 export {check_all_recipes, get_all_recipes, 
     initial_nodes, initial_edges, all_recipes, 
     generateAltRecipes, calculate, get_all_known_resources, 
-    power_multiplier};
+    power_multiplier, machines_total, power_shards_max};

@@ -9,7 +9,7 @@ import SourceResource from '../NodeTypes/SourceResource.jsx';
 import React from 'react';
 import TargetSelector from './TargetSelector.jsx';
 import SelectedRecipes from './SelectedRecipes.jsx';
-import { calculate, generateAltRecipes, power_multiplier } from '../satis/calculator.js';
+import { calculate, generateAltRecipes, machines_total, power_multiplier, power_shards_max } from '../satis/calculator.js';
 import { Background } from '@xyflow/react';
 import { Controls } from '@xyflow/react';
 import ResourceRecipe from '../NodeTypes/ResourceRecipe.jsx';
@@ -183,11 +183,14 @@ function PageFactory() {
     }
 
     let total_consumption = 0;
+    let total_power_shards = 0;
+    let total_somersloops = 0;
     let nodes = [];
     let edges = [];
 
     let sourceResources = {};
     let secondaryOutputs = {};
+
 
     let cnt = 0;
     for (let [rcname, recipe_info] of Object.entries(res)) {
@@ -197,7 +200,8 @@ function PageFactory() {
       let multiplier = rate / recipe_output;
 
       // modifiers
-      let max_power_shards = Math.ceil(multiplier / 2.5) * 3;
+      let max_power_shards = power_shards_max(multiplier);
+
       let cur_power_shards = 0;
       let cur_somersloops = 0;
       if (selectedModifiers[rcname + selectedRecipes[rcname]]) {
@@ -205,9 +209,14 @@ function PageFactory() {
         cur_somersloops = selectedModifiers[rcname + selectedRecipes[rcname]].somersloops;
       }
       cur_power_shards = Math.min(cur_power_shards, max_power_shards);
+      let machines_with_power_shards = machines_total(multiplier, cur_power_shards);
 
-      let max_somersloops = Math.ceil(multiplier) * machines[recipe.machine].somersloop_slots;
+      let max_somersloops = machines_with_power_shards * machines[recipe.machine].somersloop_slots;
       cur_somersloops = Math.min(cur_somersloops, max_somersloops);
+
+      total_power_shards += cur_power_shards;
+      total_somersloops += cur_somersloops;
+
       let set_modifiers = (power_shards, somersloops) => {
         let modified = {};
         Object.assign(modified, selectedModifiers);
@@ -248,8 +257,6 @@ function PageFactory() {
         })
       }
 
-
-
       for (let ing in recipe.ingredients) {
         if (sources.includes(ing)) {
           let input_rate = multiplier * recipe.ingredients[ing];
@@ -289,6 +296,7 @@ function PageFactory() {
         type: 'ResourceRecipe',
         data: {
           rate,
+          machines_with_power_shards,
           recipe,
           name: rcname,
           cur_power_shards,
@@ -376,7 +384,7 @@ function PageFactory() {
     
     setEdges(edges);
     setNodes(nodes);
-    setStats({energy: total_consumption, secondaryOutputs});
+    setStats({energy: total_consumption, secondaryOutputs, total_power_shards, total_somersloops});
   }, [selectedRecipes, selectedModifiers])
 
   const onSelectRecipe = useCallback((recipe) => {

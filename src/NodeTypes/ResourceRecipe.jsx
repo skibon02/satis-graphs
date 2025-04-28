@@ -35,7 +35,7 @@ function ResourceRecipe({ data, isConnectable }) {
 
   return (
     <div className="recipe-node">
-      <p>{Math.round(factor * 1000) / 1000}</p>
+      <p>{Math.round(factor * 1000) / 1000} ({data.machines_with_power_shards})</p>
       <div className="recipe-node-cont">
         <div className='inputs'>
           {inputs}
@@ -69,6 +69,7 @@ function ResourceRecipe({ data, isConnectable }) {
       <div className="modifiers">
         <div className="modifier">
           <img src={powerShard} alt="Power Shard" />
+          <button onClick={() => data.set_power_shards(v => Math.max(0, v - 10))}>--</button>
           <button onClick={() => data.set_power_shards(v => Math.max(0, v - 1))}>-</button>
           <input
             type="number"
@@ -76,16 +77,19 @@ function ResourceRecipe({ data, isConnectable }) {
             onChange={ev => data.set_power_shards(Number(ev.target.value))}
           />
           <button onClick={() => data.set_power_shards(v => v + 1)}>+</button>
+          <button onClick={() => data.set_power_shards(v => v + 1)}>++</button>
         </div>
         <div className="modifier">
           <img src={somersloop} alt="Somersloop" />
-          <button onClick={() => data.set_somersloops(v2 => Math.max(0, v2 - 1))}>-</button>
+          <button onClick={() => data.set_somersloops(v => Math.max(0, v - 10))}>--</button>
+          <button onClick={() => data.set_somersloops(v => Math.max(0, v - 1))}>-</button>
           <input
             type="number"
             value={data.cur_somersloops}
             onChange={ev => data.set_somersloops(Number(ev.target.value))}
           />
-          <button onClick={() => data.set_somersloops(v2 => v2 + 1)}>+</button>
+          <button onClick={() => data.set_somersloops(v => v + 1)}>+</button>
+          <button onClick={() => data.set_somersloops(v => v + 10)}>++</button>
         </div>
       </div>
     </div>
