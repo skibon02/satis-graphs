@@ -77,7 +77,7 @@ function ResourceRecipe({ data, isConnectable }) {
             onChange={ev => data.set_power_shards(Number(ev.target.value))}
           />
           <button onClick={() => data.set_power_shards(v => v + 1)}>+</button>
-          <button onClick={() => data.set_power_shards(v => v + 1)}>++</button>
+          <button onClick={() => data.set_power_shards(v => v + 10)}>++</button>
         </div>
         <div className="modifier">
           <img src={somersloop} alt="Somersloop" />

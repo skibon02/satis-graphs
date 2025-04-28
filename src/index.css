@@ -117,19 +117,10 @@ body {
 .factory-stats .energy p, .factory-stats .secondary-outputs {
   font-size: 1.2em;
 }
-.factory-stats .secondary-outputs img {
-  width: 2em;
-  margin-right: .4em;
-}
 
 .factory-stats .energy .value {
   color: rgb(230, 110, 235);
   font-weight: bold;
-}
-
-.factory-stats .energy img {
-  height: 2em;
-  margin-right: .2em;
 }
 
 .target-selector {
