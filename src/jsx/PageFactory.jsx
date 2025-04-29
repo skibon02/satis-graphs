@@ -173,10 +173,10 @@ function PageFactory() {
   useEffect(() => {
     const startTime = performance.now();
 
-    let res = calculate(targetResources, selectedRecipes);
+    let res = calculate(targetResources, selectedRecipes, selectedModifiers);
     if (res == "recursion_detected") {
-      alert("Recursion detected!");
       const endTime = performance.now()
+      alert("Recursion detected!");
       console.log(`Calculating factory recipes took ${endTime - startTime} milliseconds`)  
       
       return;
@@ -189,7 +189,6 @@ function PageFactory() {
     let new_edges = [];
 
     let y_start = nodes.reduce((prev, cur) => Math.max(prev, cur.position.y), 0) + 500;
-    debugger;
     let x_source = -800;
     let y_source = y_start;
     let x_recipe = 0;
@@ -201,29 +200,14 @@ function PageFactory() {
     let secondaryOutputs = {};
 
 
-    for (let [rcname, recipe_info] of Object.entries(res)) {
-      let rate = recipe_info.rate;
-      let recipe = recipe_info.recipe;
+    for (let [rcname, rcinfo] of Object.entries(res)) {
+      let rate = rcinfo.rate;
+      let recipe = rcinfo.recipe;
       let recipe_output = rcname === recipe.name ? recipe.output : recipe.output2;
       let multiplier = rate / recipe_output;
 
-      // modifiers
-      let max_power_shards = power_shards_max(multiplier);
-
-      let cur_power_shards = 0;
-      let cur_somersloops = 0;
-      if (selectedModifiers[rcname + selectedRecipes[rcname]]) {
-        cur_power_shards = selectedModifiers[rcname + selectedRecipes[rcname]].power_shards;
-        cur_somersloops = selectedModifiers[rcname + selectedRecipes[rcname]].somersloops;
-      }
-      cur_power_shards = Math.min(cur_power_shards, max_power_shards);
-      let machines_with_power_shards = machines_total(multiplier, cur_power_shards);
-
-      let max_somersloops = machines_with_power_shards * machines[recipe.machine].somersloop_slots;
-      cur_somersloops = Math.min(cur_somersloops, max_somersloops);
-
-      total_power_shards += cur_power_shards;
-      total_somersloops += cur_somersloops;
+      total_power_shards += rcinfo.cur_power_shards;
+      total_somersloops += rcinfo.cur_somersloops;
 
       let set_modifiers = (power_shards, somersloops) => {
         let modified = {};
@@ -235,13 +219,14 @@ function PageFactory() {
         setSelectedModifiers(modified)
       };
 
-      if (recipe_info.recipe.machine) {
-        let base_consumption = recipe_info.recipe.machine && machines[recipe_info.recipe.machine].energy;
+      if (rcinfo.recipe.machine) {
+        // todo recalculate
+        let base_consumption = rcinfo.recipe.machine && machines[rcinfo.recipe.machine].energy;
         let somersloop_factor = 0;
-        if (machines[recipe_info.recipe.machine].somersloop_slots) {
-          somersloop_factor = cur_somersloops / machines[recipe_info.recipe.machine].somersloop_slots
+        if (machines[rcinfo.recipe.machine].somersloop_slots) {
+          somersloop_factor = rcinfo.cur_somersloops / machines[rcinfo.recipe.machine].somersloop_slots
         }
-        total_consumption += base_consumption * multiplier * power_multiplier(1 + cur_power_shards / multiplier * 0.5, somersloop_factor);
+        total_consumption += base_consumption * multiplier * power_multiplier(1 + rcinfo.cur_power_shards / multiplier * 0.5, somersloop_factor);
       }
 
       // secondary output check
@@ -303,28 +288,23 @@ function PageFactory() {
         },
         type: 'ResourceRecipe',
         data: {
-          rate,
-          machines_with_power_shards,
           recipe,
           name: rcname,
-          cur_power_shards,
-          cur_somersloops,
-          max_power_shards,
-          max_somersloops,
+          rcinfo,
           set_power_shards: (v) => {
             if (v instanceof Function) {
-              set_modifiers(v(cur_power_shards), cur_somersloops)
+              set_modifiers(v(rcinfo.cur_power_shards), rcinfo.cur_somersloops)
             }
             else {
-              set_modifiers(v, cur_somersloops)
+              set_modifiers(v, rcinfo.cur_somersloops)
             }
           },
           set_somersloops: (v) => {
             if (v instanceof Function) {
-              set_modifiers(cur_power_shards, v(cur_somersloops))
+              set_modifiers(rcinfo.cur_power_shards, v(rcinfo.cur_somersloops))
             }
             else {
-              set_modifiers(cur_power_shards, v)
+              set_modifiers(rcinfo.cur_power_shards, v)
             }
           },
         }

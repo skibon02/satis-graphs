@@ -1,3 +1,4 @@
+import machines from './machines_db.js';
 import {recipes, sources} from './recipes_db.js'
 
 function get_all_known_resources() {
@@ -55,7 +56,7 @@ function all_recipes(rcname) {
 }
 
 
-function traverseResource(rcname, select_recipe, rate = 0, for_each = (rcname, recipe, rate) => {}, path = new Set()) {
+function traverseResource(rcname, select_recipe, rate = 0, for_each = (rcname, recipe, rate, cur_path) => {}, path = new Set()) {
     if (path.has(rcname)) {
         return "recursion_detected"; // нашли цикл, возвращаем сигнал наверх
     }
@@ -63,7 +64,7 @@ function traverseResource(rcname, select_recipe, rate = 0, for_each = (rcname, r
 
     let recipes = all_recipes(rcname);
     if (recipes === "basic_resource") {
-    path.delete(rcname);
+        path.delete(rcname);
         return; // конец ветки
     }
 
@@ -75,7 +76,7 @@ function traverseResource(rcname, select_recipe, rate = 0, for_each = (rcname, r
     }
     let recipe = recipes[recipe_num];
 
-    for_each(rcname, recipe, rate); // делаем что-то полезное с рецептом
+    for_each(rcname, recipe, rate, path); // делаем что-то полезное с рецептом
 
     let out_rate = recipe.name === rcname ? recipe.output : recipe.output2;
 
@@ -228,35 +229,133 @@ function generateAltRecipes(targetResources, cur_alt_recipes) {
   return res;
 }
 
-function calculate(targetResources, cur_alt_recipes) {
-    let res = {};
-
+function calculate(targetResources, cur_alt_recipes, selectedModifiers) {
+    // 1) generate initial ingredient sets
+    const ing_set = {};
     for (let rc in targetResources) {
-      let traverse_res = traverseResource(
-        rc, //1
-        (rcname, recipes) => {
-            if (cur_alt_recipes[rcname]) {
-            return cur_alt_recipes[rcname];
-            }
-            else {
-            return 0;
-            }
-        }, //2
-        targetResources[rc], //3
-        (rcname, recipe, rate) => {
-            if (res[rcname]) {
-                res[rcname].rate += rate;
-            }
-            else {
-                res[rcname] = {
-                    rate,
-                    recipe
+        let traverse_res = traverseResource(
+            rc, //1
+            (rcname, recipes) => {
+                if (cur_alt_recipes[rcname]) {
+                    return cur_alt_recipes[rcname];
+                }
+                else {
+                    return 0;
+                }
+            }, //2
+            targetResources[rc], //3
+            (rcname, recipe, rate, path) => {
+                for (let parent of path) {
+                    if (!ing_set[parent]) {
+                        ing_set[parent] = new Set();
+                    }
+                    for (let ing in recipe.ingredients) {
+                        ing_set[parent].add(ing);
+                    }
                 }
             }
-        }); //4
-      if (traverse_res == "recursion_detected") {
-        return "recursion_detected";
-      }
+        ); //4
+        if (traverse_res == "recursion_detected") {
+            console.error(`Recursion detected at ${rc} during phase 1 (ingredient sets)`);
+            return "recursion_detected";
+        }
+    }
+
+    // 2) Go through each resource and collect recipes
+    // rcname => rate (number)
+    let workingSet = Object.assign({}, targetResources);
+    let res = {};
+
+    const ing_set_count = (rc) => {
+        let res = 0
+        for (let working_rc in workingSet) {
+            if (ing_set[working_rc] && ing_set[working_rc].has(rc)) {
+                res++;
+            }
+        }
+        return res;
+    };
+
+    while (Object.keys(workingSet).length > 0) {
+        // 2.1) Find resource ready to be fully calculated
+        let handled = false
+        for (let [rc, rate] of Object.entries(workingSet)) {
+            if (ing_set_count(rc) == 0) {
+                // 2.2) Found resource. can proceed with calculation
+                let recipes = all_recipes(rc);
+                if (recipes === "basic_resource") {
+                    // just remove from working set
+                    delete workingSet[rc];
+                    handled = true;
+                    break;
+                }
+
+                // 2.3) select alt recipe
+                let recipe_num = 0;
+                if (cur_alt_recipes[rc]) {
+                    recipe_num = cur_alt_recipes[rc];
+                }
+                let recipe = recipes[recipe_num];
+                
+                // 2.4) remove from working set, calculate current recipe
+                delete workingSet[rc];
+                let primary_output = recipe.name === rc ? recipe.output : recipe.output2;
+                let base_machines_cnt = rate / primary_output;
+                let max_power_shards = power_shards_max(base_machines_cnt);
+
+                // restore desired amount
+                let cur_power_shards = 0;
+                let cur_somersloops = 0;
+                if (selectedModifiers[rc + cur_alt_recipes[rc]]) {
+                  cur_power_shards = selectedModifiers[rc + cur_alt_recipes[rc]].power_shards;
+                  cur_somersloops = selectedModifiers[rc + cur_alt_recipes[rc]].somersloops;
+                }
+
+                // limit
+                cur_power_shards = Math.min(cur_power_shards, max_power_shards);
+                let machines_with_power_shards = machines_total(base_machines_cnt, cur_power_shards);
+                let max_somersloops = machines_with_power_shards * machines[recipe.machine].somersloop_slots;
+                if (isNaN(max_somersloops)) debugger;
+                cur_somersloops = Math.min(cur_somersloops, max_somersloops);
+
+                // calculate actual machines_cnt
+                const machines_cnt = machines_with_power_shards;
+
+                const ing_multiplier = max_somersloops > 0 ? 1 / (1 + cur_somersloops / max_somersloops) : 1;
+
+                res[rc] = {
+                    rate,
+                    recipe,
+                    base_machines_cnt,
+                    machines_cnt,
+                    ing_multiplier,
+
+                    cur_power_shards,
+                    cur_somersloops,
+                    max_power_shards,
+                    max_somersloops,
+                }
+
+                // 2.5) update working set from ingredients
+                for(let ing in recipe.ingredients) {
+                    let ing_rate = base_machines_cnt * recipe.ingredients[ing] * ing_multiplier;
+                    if (!(ing in workingSet)) {
+                        workingSet[ing] = 0;
+                    }
+                    workingSet[ing] += ing_rate;
+                }
+
+                handled = true;
+                break;
+            }
+        }
+
+        // Targets have each other in ingredients set => error
+        if (!handled) {
+            console.error(`Recursion detected during phase 2 (calculation)`);
+            console.dir(workingSet);
+            return "recursion_detected";
+        }
     }
   
     return res;

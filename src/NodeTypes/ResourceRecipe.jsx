@@ -9,22 +9,24 @@ import { machines_total } from '../satis/calculator.js';
 import machines from '../satis/machines_db.js';
 
 function ResourceRecipe({ data, isConnectable }) {
-  let output_rate = data.recipe.name == data.name ? data.recipe.output : data.recipe.output2;
+  let rcinfo = data.rcinfo;
+  let recipe = rcinfo.recipe;
+  let output_rate = rcinfo.recipe.name == data.name ? recipe.output : recipe.output2;
   let output_name = data.name;
-  let factor = data.rate / output_rate;
+  let factor = rcinfo.rate / output_rate;
 
-  let secondary_output_rate = data.recipe.name == data.name ? data.recipe.output2 : data.recipe.output;
-  let secondary_output_name = data.recipe.name == data.name ? data.recipe.name2 : data.recipe.name;
+  let secondary_output_rate = recipe.name == data.name ? recipe.output2 : recipe.output;
+  let secondary_output_name = recipe.name == data.name ? recipe.name2 : recipe.name;
   secondary_output_rate *= factor;
 
   if (!secondary_output_name) {
     secondary_output_rate = null;
   }
 
-  let avg_overclocking = Math.round((100 + (data.cur_power_shards / machines_total(factor, data.cur_power_shards)) * 50) * 10) / 10;
-  let out_factor = Math.round((1 + data.cur_somersloops / machines_total(factor, data.cur_power_shards) / machines[data.recipe.machine].somersloop_slots) * 100) / 100
+  let avg_overclocking = Math.round((100 + (rcinfo.cur_power_shards / machines_total(factor, rcinfo.cur_power_shards)) * 50) * 10) / 10;
+  let out_factor = Math.round((1 + rcinfo.cur_somersloops / machines_total(factor, rcinfo.cur_power_shards) / machines[recipe.machine].somersloop_slots) * 100) / 100
 
-  let inputs = Object.entries(data.recipe.ingredients).map(([ing, inp_rate]) => {
+  let inputs = Object.entries(recipe.ingredients).map(([ing, inp_rate]) => {
     return <div key={ing} className='cont'>
         <Handle 
           style={{
@@ -34,16 +36,17 @@ function ResourceRecipe({ data, isConnectable }) {
           isConnectable={isConnectable}
           position={Position.Left} 
           type='target' />
-        <ResourceRate rcname={ing} rate={inp_rate * factor} />
+        <ResourceRate rcname={ing} rate={inp_rate * factor * rcinfo.ing_multiplier} />
       </div>
   });
 
+  const show_modifiers = avg_overclocking != 100 || out_factor != 1;
   return (
     <div className="recipe-node">
-      {(avg_overclocking != 100 || out_factor != 1) && <div className="top-modifiers">
+      {show_modifiers && <div className="top-modifiers">
         <div><img src={powerShard}/> {avg_overclocking}%<img src={somersloop}/> x{out_factor}</div>
       </div>}
-      <p>{Math.round(factor * 1000) / 1000} ({data.machines_with_power_shards})</p>
+      <p>{Math.round(factor * 1000) / 1000} ({rcinfo.machines_cnt})</p>
       <div className="recipe-node-cont">
         <div className='inputs'>
           {inputs}
@@ -58,7 +61,7 @@ function ResourceRecipe({ data, isConnectable }) {
               isConnectable={isConnectable}
               position={Position.Right} 
               type='source' />
-            <ResourceRate rcname={output_name} rate={data.rate} />
+            <ResourceRate rcname={output_name} rate={rcinfo.rate} />
           </div>
           { secondary_output_rate && 
             <div className='cont'>
@@ -82,13 +85,13 @@ function ResourceRecipe({ data, isConnectable }) {
             <button onClick={() => data.set_power_shards(v => Math.max(0, v - 1))}>-</button>
             <input
               type="number"
-              value={data.cur_power_shards}
+              value={rcinfo.cur_power_shards}
               onChange={ev => data.set_power_shards(Number(ev.target.value))}
             />
             <button onClick={() => data.set_power_shards(v => v + 1)}>+</button>
             <button onClick={() => data.set_power_shards(v => v + 10)}>++</button>
           </div>
-          <p>max {data.max_power_shards}</p>
+          <p>max {rcinfo.max_power_shards}</p>
         </div>
         <div className="modifier">
           <div className='cont'>
@@ -97,13 +100,13 @@ function ResourceRecipe({ data, isConnectable }) {
             <button onClick={() => data.set_somersloops(v => Math.max(0, v - 1))}>-</button>
             <input
               type="number"
-              value={data.cur_somersloops}
+              value={rcinfo.cur_somersloops}
               onChange={ev => data.set_somersloops(Number(ev.target.value))}
             />
             <button onClick={() => data.set_somersloops(v => v + 1)}>+</button>
             <button onClick={() => data.set_somersloops(v => v + 10)}>++</button>
           </div>
-          <p>max {data.max_somersloops}</p>
+          <p>max {rcinfo.max_somersloops}</p>
         </div>
       </div>
     </div>
