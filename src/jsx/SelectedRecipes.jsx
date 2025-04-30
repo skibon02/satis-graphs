@@ -11,7 +11,7 @@ let SelectedRecipes = memo(function SelectedRecipes({ selectedRecipes, selectRec
         let recipe = recipes[recipe_num];
 
         return (
-            <div key={recipe.name + '-' + recipe_num}>
+            <div key={name}>
                 <RcImage rcname={name}/>
                 <Select 
                     classNames={{
