@@ -388,7 +388,7 @@ function PageFactory() {
       selectedModifiers
     }));
     if (shouldUpdateURI) {
-      history.pushState({}, '', '/?state=' + params);
+      history.pushState({}, '', '/satis-graphs/?state=' + params);
       shouldUpdateURI = false
     }
 
