@@ -137,6 +137,8 @@ const useLayoutedElements = () => {
 };
   
 const nodeTypes = { TargetResource, SourceResource, ResourceRecipe, SecondaryResource };
+
+let shouldUpdateURI = false;
  
 function PageFactory() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -153,8 +155,8 @@ function PageFactory() {
   // key: rcname + recipeIndex
   // value: {powerShards: 1, somersloop: 0}
   const [selectedModifiers, setSelectedModifiers] = useState({});
-
   const [stats, setStats] = useState({secondaryOutputs: {}});
+
 
   useEffect(() => {
     const startTime = performance.now();
@@ -216,6 +218,8 @@ function PageFactory() {
           power_shards,
           somersloops,
         }
+
+        shouldUpdateURI = true;
         setSelectedModifiers(modified)
       };
 
@@ -378,6 +382,16 @@ function PageFactory() {
       }
     }
 
+    let params = encodeURIComponent(JSON.stringify({
+      targetResources,
+      selectedRecipes, 
+      selectedModifiers
+    }));
+    if (shouldUpdateURI) {
+      history.pushState({}, '', '/?state=' + params);
+      shouldUpdateURI = false
+    }
+
     const endTime = performance.now()
     console.log(`Calculating factory recipes took ${endTime - startTime} milliseconds`)  
     
@@ -385,6 +399,27 @@ function PageFactory() {
     setNodes(new_nodes);
     setStats({energy: total_consumption, secondaryOutputs, total_power_shards, total_somersloops});
   }, [selectedRecipes, selectedModifiers])
+
+
+  const restoreStateFromURL = () => {
+    if (window.location.search.startsWith("?state=")) {
+      let state = JSON.parse(decodeURIComponent(window.location.search.slice(7)));
+
+      console.dir(state);
+
+      setSelectedRecipes(state.selectedRecipes);
+      setTargetResources(state.targetResources);
+      setSelectedModifiers(state.selectedModifiers);
+    }
+  }
+  useEffect(() => {
+    restoreStateFromURL();
+  }, [])
+  useEffect(() => {
+    window.addEventListener('popstate', (event) => {
+      restoreStateFromURL();
+    });
+  }, [])
 
   const onSelectRecipe = useCallback((recipe) => {
     selectedRecipes[recipe.name] = recipe.recipe_num;
@@ -395,9 +430,14 @@ function PageFactory() {
       return
     }
     
+    shouldUpdateURI = true;
     setSelectedRecipes(res);
   }, [targetResources, selectedRecipes]);
   
+  const onSelectTargetResources = useCallback((r) => {
+    setTargetResources(r);
+    shouldUpdateURI = true;
+  }, [setTargetResources])
   return (
     <>
         <ReactFlow
@@ -421,7 +461,7 @@ function PageFactory() {
           <Background />
           <Controls />
         </ReactFlow>
-      <TargetSelector targetResources={targetResources} setTargetResources={setTargetResources} />
+      <TargetSelector targetResources={targetResources} setTargetResources={onSelectTargetResources} />
       <SelectedRecipes selectedRecipes={selectedRecipes} selectRecipe={onSelectRecipe} />
       <div className={isRunning() ? "unmangle active" : "unmangle"} onClick={toggle}>
         Unmangle
