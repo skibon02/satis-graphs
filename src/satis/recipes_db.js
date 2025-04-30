@@ -26,6 +26,7 @@ const sources = [
     "power-shard",
     "excited-photonic-matter",
     "solid-biofuel",
+    "uranium-waste"
 ]
 
 const recipes = [
@@ -36,7 +37,8 @@ const recipes = [
         ingredients: {
             "reanimated-sam": 60,
             "aluminum-ingot": 120,
-        }
+        },
+        machine: "converter"
     },
     {
         name: "ficsite-ingot",
@@ -44,7 +46,8 @@ const recipes = [
         ingredients: {
             "reanimated-sam": 45,
             "caterium-ingot": 60,
-        }
+        },
+        machine: "converter"
     },
     {
         name: "ficsite-ingot",
@@ -52,10 +55,19 @@ const recipes = [
         ingredients: {
             "reanimated-sam": 40,
             "iron-ingot": 240,
-        }
+        },
+        machine: "converter"
     },
 
-    // alt recipes
+    // phase 5 recipes
+    {
+        name: "dark-matter-residue",
+        output: 100,
+        ingredients: {
+            "reanimated-sam": 50,
+        },
+        machine: "converter"
+    },
     {
         name: "ficsonium-fuel-rod",
         output: 2.5,

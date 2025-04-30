@@ -251,7 +251,7 @@ function PageFactory() {
 
       for (let ing in recipe.ingredients) {
         if (sources.includes(ing)) {
-          let input_rate = multiplier * recipe.ingredients[ing];
+          let input_rate = multiplier * recipe.ingredients[ing] * rcinfo.ing_multiplier;
           if (sourceResources[ing]) {
             sourceResources[ing] += input_rate;
           }
