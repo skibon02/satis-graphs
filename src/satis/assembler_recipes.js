@@ -13,7 +13,7 @@ const assembler_base_recipes = [
         output: 30,
         ingredients: {
             "aluminum-ingot": 30,
-            "copper-sheet": 10,
+            "copper-ingot": 10,
         }
     },
     {
