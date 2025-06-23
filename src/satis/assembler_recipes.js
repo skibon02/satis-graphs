@@ -163,6 +163,14 @@ const assembler_base_recipes = [
 
 const assembler_alt_recipes = [
     {
+        name: "empty-canister",
+        output: 60,
+        ingredients: {
+            "iron-plate": 30,
+            "copper-sheet": 15,
+        }
+    },
+    {
         name: "reinforced-iron-plate",
         output: 3.75,
         ingredients: {

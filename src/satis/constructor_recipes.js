@@ -36,6 +36,20 @@ const constructor_base_recipes = [
         }
     },
     {
+        name: "empty-canister",
+        output: 60,
+        ingredients: {
+            "plastic": 30,
+        }
+    },
+    {
+        name: "empty-fluid-tank",
+        output: 60,
+        ingredients: {
+            "aluminum-ingot": 60,
+        }
+    },
+    {
         name: "ficsite-trigon",
         output: 30,
         ingredients: {
@@ -110,6 +124,13 @@ const constructor_base_recipes = [
 
 const constructor_alt_recipes = [
     
+    {
+        name: "empty-canister",
+        output: 40,
+        ingredients: {
+            "steel-ingot": 40,
+        }
+    },
     {
         name: "steel-beam",
         output: 22.5,

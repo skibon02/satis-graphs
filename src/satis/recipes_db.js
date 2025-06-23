@@ -6,6 +6,10 @@ import energy_recipes from "./energy_recipes.js";
 import smelter_recipes from "./smelter_recipes";
 import foundry_recipes from "./foundry_recipes";
 import refinery_recipes from "./refinery_recipes";
+import converter_recipes from "./converter_recipes";
+import packager_recipes from "./packager_recipes";
+import particle_accelerator_recipes from "./particle_accelerator_recipes";
+import quantum_encoder_recipes from "./quantum_encoder";
 
 const sources = [
     "sam",
@@ -30,124 +34,7 @@ const sources = [
 ]
 
 const recipes = [
-    //converter
-    {
-        name: "ficsite-ingot",
-        output: 30,
-        ingredients: {
-            "reanimated-sam": 60,
-            "aluminum-ingot": 120,
-        },
-        machine: "converter"
-    },
-    {
-        name: "ficsite-ingot",
-        output: 15,
-        ingredients: {
-            "reanimated-sam": 45,
-            "caterium-ingot": 60,
-        },
-        machine: "converter"
-    },
-    {
-        name: "ficsite-ingot",
-        output: 10,
-        ingredients: {
-            "reanimated-sam": 40,
-            "iron-ingot": 240,
-        },
-        machine: "converter"
-    },
-
-    // phase 5 recipes
-    {
-        name: "dark-matter-residue",
-        output: 100,
-        ingredients: {
-            "reanimated-sam": 50,
-        },
-        machine: "converter"
-    },
-    {
-        name: "ficsonium-fuel-rod",
-        output: 2.5,
-        name2: "dark-matter-residue",
-        output2: 50,
-        ingredients: {
-            "ficsonium": 5,
-            "electromagnetic-control-rod": 5,
-            "ficsite-trigon": 100,
-            "excited-photonic-matter": 50,
-        },
-        machine: "quantum-encoder"
-    },
-    {
-        name: "encased-plutonium-cell",
-        output: 10,
-        ingredients: {
-            "non-fissile-uranium": 75,
-            "aluminum-casing": 10,
-        },
-        machine: "particle-accelerator"
-    },
-    {
-        name: "dark-matter-crystal",
-        output: 30,
-        ingredients: {
-            "diamonds": 30,
-            "dark-matter-residue": 150
-        },
-        machine: "particle-accelerator"
-    },
-    {
-        name: "diamonds",
-        output: 30,
-        ingredients: {
-            "coal": 600
-        },
-        machine: "particle-accelerator"
-    },
-    {
-        name: "ficsonium",
-        output: 10,
-        ingredients: {
-            "plutonium-waste": 10,
-            "singularity-cell": 10,
-            "dark-matter-residue": 200,
-        },
-        machine: "particle-accelerator"
-    },
-    {
-        name: "nuclear-pasta",
-        output: 0.5,
-        ingredients: {
-            "copper-powder": 100,
-            "pressure-conversion-cube": 0.5
-        },
-        machine: "particle-accelerator"
-    },
-    {
-        name: "plutonium-pellet",
-        output: 30,
-        ingredients: {
-            "non-fissile-uranium": 100,
-            "uranium-waste": 25,
-        },
-        machine: "particle-accelerator"
-    },
-    {
-        name: "superposition-oscillator",
-        output: 5,
-        name2: "dark-matter-residue",
-        output2: 125,
-        ingredients: {
-            "dark-matter-crystal": 30,
-            "crystal-oscillator": 5,
-            "alclad-aluminum-sheet": 45,
-            "excited-photonic-matter": 125,
-        },
-        machine: "quantum-encoder"
-    }
+    
 ];
 
 const recipes_added = false;
@@ -182,6 +69,22 @@ if (!recipes_added) {
     }
     for (let recipe of refinery_recipes) {
         recipe.machine = "refinery";
+        recipes.push(recipe);
+    }
+    for (let recipe of converter_recipes) {
+        recipe.machine = "converter";
+        recipes.push(recipe);
+    }
+    for (let recipe of packager_recipes) {
+        recipe.machine = "packager";
+        recipes.push(recipe);
+    }
+    for (let recipe of particle_accelerator_recipes) {
+        recipe.machine = "particle-accelerator";
+        recipes.push(recipe);
+    }
+    for (let recipe of quantum_encoder_recipes) {
+        recipe.machine = "quantum-encoder";
         recipes.push(recipe);
     }
 }

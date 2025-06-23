@@ -12,6 +12,10 @@ const machines = {
         energy: 4,
         somersloop_slots: 1,
     },
+    "packager":  {
+        energy: 10,
+        somersloop_slots: 0,
+    },
     "assembler":  {
         energy: 15,
         somersloop_slots: 2,

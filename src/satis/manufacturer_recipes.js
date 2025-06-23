@@ -214,6 +214,15 @@ const manufacturer_alt_recipes = [
         }
     },
     {
+        name: "sam-fluctuator",
+        output: 10,
+        ingredients: {
+            "reanimated-sam": 60,
+            "wire": 50,
+            "steel-pipe": 30,
+        }
+    },
+    {
         name: "smart-plating",
         output: 5,
         ingredients: {
