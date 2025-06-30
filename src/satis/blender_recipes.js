@@ -12,6 +12,15 @@ const blender_base_recipes = [
         }
     },
     {
+        name: "biochemical-sculptor",
+        output: 2,
+        ingredients: {
+            "assembly-director-system": 0.5,
+            "ficsite-trigon": 40,
+            "water": 10,
+        }
+    },
+    {
         name: "cooling-system",
         output: 6,
         ingredients: {
